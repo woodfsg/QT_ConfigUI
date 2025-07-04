@@ -49,19 +49,51 @@ void MainWindow::on_addStage_clicked()
         QString name = stageDialog.stageName();
         QString type = stageDialog.stageType();
 
-        // 4. 将获取到的数据显示在主窗口的 Label 上
-        ui->resultLabel->setText(QString("新阶段已添加：名称=%1, 类型=%2").arg(name).arg(type));
+        QTreeWidgetItem *stage = new QTreeWidgetItem();
+        stage->setText(0,name+"_"+type);
+        ui->treeWidget->addTopLevelItem(stage);
     }
-    else
-    {
-        // 如果用户点击了 "Cancel"
-        ui->resultLabel->setText("用户取消了添加操作。");
-    }    
 
 }
 
 void MainWindow::on_deleteItem_clicked()
 {
+    QTreeWidgetItem* currentItem = ui->treeWidget->currentItem();
+    if (currentItem) { // 确保有节点被选中
+        if (currentItem->parent() == nullptr) {
+            // 如果当前选中的是顶层节点
+            int index = ui->treeWidget->indexOfTopLevelItem(currentItem);
+            if (index != -1) {
+                QTreeWidgetItem* takenItem = ui->treeWidget->takeTopLevelItem(index);
+                delete takenItem; // 同样会级联删除所有子节点
+            }
+        } else {
+            currentItem->parent()->removeChild(currentItem);
+            delete currentItem;
+        }
+    }
     return;
 }
 
+void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    if (item) {
+        if (item->parent() == nullptr) {
+            // 如果当前选中的是顶层节点
+            AddStageDialog stageDialog(this);
+            int result = stageDialog.exec();
+            if (result == QDialog::Accepted)
+            {
+                QString name = stageDialog.stageName();
+                QString type = stageDialog.stageType();
+
+                item->setText(0, name + "_" + type);
+            }
+        } else {
+            // 如果当前选中的是子节点
+            item->setFlags(item->flags() | Qt::ItemIsEditable);
+            ui->treeWidget->editItem(item, column);
+        }
+
+    }
+}

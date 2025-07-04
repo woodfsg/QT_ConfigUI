@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMap>
+#include <QTreeWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,6 +25,6 @@ private slots:
     void on_category_currentTextChanged(const QString &text);
     void on_addStage_clicked();
     void on_deleteItem_clicked();
-
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 };
 #endif // MAINWINDOW_H
