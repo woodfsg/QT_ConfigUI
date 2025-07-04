@@ -22,7 +22,9 @@ SOURCES += \
 
 HEADERS += \
     addstagedialog.h \
-    mainwindow.h
+    mainwindow.h \
+    processstage.h \
+    processstep.h
 
 FORMS += \
     addstagedialog.ui \

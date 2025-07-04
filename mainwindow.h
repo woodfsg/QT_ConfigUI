@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QTreeWidget>
+#include "processstage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,11 +21,18 @@ public:
 private:
     Ui::MainWindow *ui;
     QMap<QString, QStringList> m_dataMap;
+    QList<ProcessStage> m_processStages;    // 存储所有阶段和步骤的数据模型
+    QTreeWidgetItem* m_currentlyEditingItem; // 当前正在编辑的步骤项
+
+    QJsonObject saveInputFormData();
+    QJsonObject savePromptFormData();
 
 private slots:
     void on_category_currentTextChanged(const QString &text);
-    void on_addStage_clicked();
-    void on_deleteItem_clicked();
+    void on_addStageButton_clicked();
+    void on_deleteItemButton_clicked();
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+    void on_submitButton_clicked();
+    void on_resetButton_clicked();
 };
 #endif // MAINWINDOW_H
