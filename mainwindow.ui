@@ -44,7 +44,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="category">
+        <widget class="QComboBox" name="programCategory">
          <item>
           <property name="text">
            <string>请选择程序类别</string>
@@ -127,61 +127,6 @@
          <string>阶段</string>
         </property>
        </column>
-       <item>
-        <property name="text">
-         <string>十七岁</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>你还差</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>国外</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>新建子项目</string>
-          </property>
-          <item>
-           <property name="text">
-            <string>新建子项目</string>
-           </property>
-          </item>
-         </item>
-         <item>
-          <property name="text">
-           <string>新建子项目</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>新建项目</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>新建子项目</string>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>发大水</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>飞洒发</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>发生发</string>
-         </property>
-        </item>
-       </item>
       </widget>
      </item>
     </layout>

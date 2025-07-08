@@ -29,22 +29,19 @@ QJsonObject MainWindow::saveInputFormData()
 {
     // 1. 创建一个空的 JSON 对象，用于存放表单数据
     QJsonObject formData;
-
-    // 2. 通过 ui 指针和在 Designer 中设置的 objectName，获取每个输入框的内容
-    //    .text() 方法可以获取 QLineEdit 当前的文本字符串
-    QString stepName = ui->inputStepNameLineEdit->text();
-    QString operatorName = ui->inputOperatorNameLineEdit->text();
     
     // （可选）进行数据校验
-    if (stepName.isEmpty()) {
-        // 你可以在这里弹出警告或进行其他处理
-        // qWarning() << "警告：步骤名称为空！";
-    }
+    // if (stepName.isEmpty()) {
+    //     // 你可以在这里弹出警告或进行其他处理
+    //     // qWarning() << "警告：步骤名称为空！";
+    // }
 
-    // 3. 将获取到的数据存入 JSON 对象
+    // 2. 将获取到的数据存入 JSON 对象
     //    使用英文作为 key 是一个非常好的习惯，便于跨平台和后续的程序处理
-    formData["stepName"] = stepName;
-    formData["operatorName"] = operatorName;
+    formData["stepName"] = ui->inputStepNameLineEdit->text();
+    formData["operatorName"] = ui->inputOperatorNameLineEdit->text();
+    formData["programCategory"] = ui->programCategory->currentText();
+    formData["subCategory"] = ui->subCategory->currentText();
 
     // 4. 返回这个包含所有数据的 JSON 对象
     return formData;
@@ -54,22 +51,21 @@ QJsonObject MainWindow::savePromptFormData()
 {
     // 1. 创建一个空的 JSON 对象，用于存放表单数据
     QJsonObject formData;
-
-    // 2. 通过 ui 指针和在 Designer 中设置的 objectName，获取每个输入框的内容
-    //    .text() 方法可以获取 QLineEdit 当前的文本字符串
-    QString stepName = ui->promptStepNameLineEdit->text();
-    QString message = ui->promptMessageLineEdit->text();
     
     // （可选）进行数据校验
-    if (stepName.isEmpty()) {
-        // 你可以在这里弹出警告或进行其他处理
-        // qWarning() << "警告：步骤名称为空！";
-    }
+    // if (stepName.isEmpty()) {
+    //     // 你可以在这里弹出警告或进行其他处理
+    //     // qWarning() << "警告：步骤名称为空！";
+    // }
 
-    // 3. 将获取到的数据存入 JSON 对象
+    // 2. 将获取到的数据存入 JSON 对象
     //    使用英文作为 key 是一个非常好的习惯，便于跨平台和后续的程序处理
-    formData["stepName"] = stepName;
-    formData["message"] = message;
+
+    formData["programCategory"] = ui->programCategory->currentText();
+    formData["subCategory"] = ui->subCategory->currentText();
+
+    formData["stepName"] = ui->promptStepNameLineEdit->text();
+    formData["message"] = ui->promptMessageLineEdit->text();
 
     // 4. 返回这个包含所有数据的 JSON 对象
     return formData;
@@ -84,6 +80,9 @@ void MainWindow::loadInputFormData(QJsonObject &formData)
     if (formData.contains("operatorName")) {
         ui->inputOperatorNameLineEdit->setText(formData["operatorName"].toString());
     }
+    if (formData.contains("programCategory")) {
+        ui->programCategory->setCurrentText(formData["programCategory"].toString());
+    }
 }
 
 void MainWindow::loadPromptFormData(QJsonObject &formData)
@@ -95,9 +94,12 @@ void MainWindow::loadPromptFormData(QJsonObject &formData)
     if (formData.contains("message")) {
         ui->promptMessageLineEdit->setText(formData["message"].toString());
     }
+    if (formData.contains("programCategory")) {
+        ui->programCategory->setCurrentText(formData["programCategory"].toString());
+    }
 }
 
-void MainWindow::on_category_currentTextChanged(const QString &text)
+void MainWindow::on_programCategory_currentTextChanged(const QString &text)
 {
     ui->subCategory->clear();
     QStringList subCategory = m_dataMap.value(text);
@@ -197,9 +199,9 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int colu
             {
                 QString name = stageDialog.stageName();
                 QString type = stageDialog.stageType();
-                item->setText(0, name + "_" + type);
+                item->setText(column, name + "_" + type);
                 // 更新数据模型中的阶段名称
-                QUuid stageId(item->data(0, Qt::UserRole).toString());
+                QUuid stageId(item->data(column, Qt::UserRole).toString());
                 for (auto& stage : m_processStages) {
                     if (stage.id == stageId) {
                         stage.stageName = name + "_" + type; // 更新阶段名称
@@ -209,8 +211,8 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int colu
             }
         } else {
             // 如果当前选中的是子节点
-            QUuid stepId(item->data(0, Qt::UserRole).toString());
-            QUuid stageId(item->parent()->data(0, Qt::UserRole).toString());
+            QUuid stepId(item->data(column, Qt::UserRole).toString());
+            QUuid stageId(item->parent()->data(column, Qt::UserRole).toString());
             for (auto& stage : m_processStages) {   
                 if (stage.id == stageId) {
                     for (auto it = stage.steps.begin(); it != stage.steps.end(); ++it) {
@@ -365,4 +367,6 @@ void MainWindow::on_paramConfig_currentChanged(int index)
     }
     // 更新记录的上一个页面索引
     m_lastParamConfigIndex = index;
+    // 清空当前正在编辑的步骤项
+    m_currentlyEditingItem = nullptr; 
 }

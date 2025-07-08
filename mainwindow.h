@@ -31,7 +31,7 @@ private:
     void loadPromptFormData(QJsonObject &formData);
 
 private slots:
-    void on_category_currentTextChanged(const QString &text);
+    void on_programCategory_currentTextChanged(const QString &text);
     void on_addStageButton_clicked();
     void on_deleteItemButton_clicked();
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
