@@ -8,20 +8,32 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // 初始化下拉框映射
-    m_dataMap["请选择程序类别"] = QStringList() << "请选择子类别";
-    m_dataMap["信息输入"] = QStringList() << "苹果" << "香蕉" << "橙子" << "葡萄";
-    m_dataMap["信息提示"] = QStringList() << "胡萝卜" << "西兰花" << "菠菜" << "土豆";
+    
+    initProgramMap(); // 初始化程序类别和子类别的映射关系
+    initParamMap();   // 初始化参数映射表
 
     m_currentlyEditingItem = nullptr;
-
-    // 初始化上一个页面索引
     m_lastParamConfigIndex = ui->paramConfig->currentIndex();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::initProgramMap()
+{
+    // 初始化下拉框映射
+    m_programMap["请选择程序类别"] = QStringList() << "请选择子类别";
+    m_programMap["信息输入"] = QStringList() << "苹果";
+    m_programMap["信息提示"] = QStringList() << "胡萝卜";
+}
+
+void MainWindow::initParamMap()
+{
+    m_paramMap.insert("苹果", 0);
+    m_paramMap.insert("胡萝卜", 1);
+    m_paramMap.insert("请选择子类别", 2);
 }
 
 QJsonObject MainWindow::saveInputFormData()
@@ -107,17 +119,15 @@ void MainWindow::loadPromptFormData(QJsonObject &formData)
 void MainWindow::on_programCategory_currentTextChanged(const QString &text)
 {
     ui->subCategory->clear();
-    QStringList subCategory = m_dataMap.value(text);
+    QStringList subCategory = m_programMap.value(text);
     //change subCategory items
     ui->subCategory->addItems(subCategory);
-    //change parameter configuration forms
-    if (text == "请选择程序类别") {
-        ui->paramConfig->setCurrentIndex(2);
-    } else if (text == "信息输入") {
-        ui->paramConfig->setCurrentIndex(0);
-    } else if (text == "信息提示") {
-        ui->paramConfig->setCurrentIndex(1);
-    }
+}
+
+void MainWindow::on_subCategory_currentTextChanged(const QString &text)
+{
+    int formIndex = m_paramMap.value(text);
+    ui->paramConfig->setCurrentIndex(formIndex);
 }
 
 void MainWindow::on_addStageButton_clicked()
@@ -338,6 +348,7 @@ void MainWindow::on_submitButton_clicked()
 
 void MainWindow::on_resetButton_clicked()
 {
+    m_currentlyEditingItem = nullptr; // 清空当前正在编辑的步骤项
     int formIndex = ui->paramConfig->currentIndex();
     switch (formIndex)
     {
