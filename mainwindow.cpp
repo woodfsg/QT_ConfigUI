@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addstagedialog.h"
-
-
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -83,6 +82,9 @@ void MainWindow::loadInputFormData(QJsonObject &formData)
     if (formData.contains("programCategory")) {
         ui->programCategory->setCurrentText(formData["programCategory"].toString());
     }
+    if (formData.contains("subCategory")) {
+        ui->subCategory->setCurrentText(formData["subCategory"].toString());
+    }
 }
 
 void MainWindow::loadPromptFormData(QJsonObject &formData)
@@ -96,6 +98,9 @@ void MainWindow::loadPromptFormData(QJsonObject &formData)
     }
     if (formData.contains("programCategory")) {
         ui->programCategory->setCurrentText(formData["programCategory"].toString());
+    }
+    if (formData.contains("subCategory")) {
+        ui->subCategory->setCurrentText(formData["subCategory"].toString());
     }
 }
 
