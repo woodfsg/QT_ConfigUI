@@ -1,5 +1,5 @@
 #include <QList>
-#include "ProcessStep.h"
+#include "processstep.h"
 
 struct ProcessStage
 {

@@ -258,54 +258,52 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int colu
 
 void MainWindow::on_submitButton_clicked()
 {
-    // 1. 确定目标阶段
+    // 1. 确定目标阶段和插入位置
     QTreeWidgetItem *currentItem = ui->treeWidget->currentItem();
-    if (currentItem==nullptr) {
+    if (currentItem == nullptr) {
         return;
     }
 
     QTreeWidgetItem *stageItem = nullptr;
+    int insertPos = -1; // -1 表示末尾插入
 
     if (currentItem->parent() == nullptr) {
-        // 如果当前选中的是顶层节点
+        // 选中的是顶层节点（stage）
         stageItem = currentItem;
+        insertPos = -1; // 末尾插入
     } else {
-        // 如果当前选中的是子节点，获取其父节点
+        // 选中的是子节点（step）
         stageItem = currentItem->parent();
+        insertPos = stageItem->indexOfChild(currentItem) + 1;
     }
 
-    
     // 2. 收集表单数据
     int formIndex = ui->paramConfig->currentIndex();
     QJsonObject formData;
     switch (formIndex)
     {
-        case 0: // 假设这个表单是 QStackedWidget 的第 0 页
-            formData = saveInputFormData(); // 在这里调用
+        case 0:
+            formData = saveInputFormData();
             break;
-
-        case 1: // 假设这个表单是 QStackedWidget 的第 1 页
-            formData = savePromptFormData(); // 在这里调用
+        case 1:
+            formData = savePromptFormData();
             break;
-
-        case 2: // 假设这个表单是 QStackedWidget 的第 2 页
-            return; // 如果是其他页面，直接返回
-        
+        case 2:
+            return;
     }
 
-    QString stepName = formData["stepName"].toString();     
+    QString stepName = formData["stepName"].toString();
 
-    // 3. 判断是新增还是更新 (这部分逻辑和之前类似，但操作对象变了)
+    // 3. 判断是新增还是更新
     if (m_currentlyEditingItem && m_currentlyEditingItem->parent() == stageItem) {
         // --- 更新步骤 ---
         QUuid stepId(m_currentlyEditingItem->data(0, Qt::UserRole).toString());
         QUuid stageId(stageItem->data(0, Qt::UserRole).toString());
 
-        // 在数据模型中找到阶段，再找到步骤，然后更新它
         for (auto& stage : m_processStages) {
             if (stage.id == stageId) {
                 for (auto& step : stage.steps) {
-                    if (step.id ==  stepId) {
+                    if (step.id == stepId) {
                         step.formData = formData;
                         step.stepName = stepName;
                         step.formIndex = formIndex;
@@ -315,34 +313,39 @@ void MainWindow::on_submitButton_clicked()
                 break;
             }
         }
-        // 更新UI
         m_currentlyEditingItem->setText(0, stepName);
         m_currentlyEditingItem = nullptr;
-
     } else {
-        // --- 新增步骤到选定阶段 ---
-        // a. 创建新的 ProcessStep 实例
+        // --- 新增步骤 ---
         ProcessStep newStep;
         newStep.formIndex = formIndex;
         newStep.formData = formData;
         newStep.stepName = stepName;
 
-        // b. 在数据模型中，找到对应的阶段并将步骤添加进去
         QUuid stageId(stageItem->data(0, Qt::UserRole).toString());
         for (auto& stage : m_processStages) {
             if (stage.id == stageId) {
-                stage.steps.append(newStep);
+                if (insertPos == -1) {
+                    // 末尾插入
+                    stage.steps.append(newStep);
+                } else {
+                    // 插入到指定位置
+                    stage.steps.insert(insertPos, newStep);
+                }
                 break;
             }
         }
-        
-        // c. 在UI上，为阶段节点添加一个子节点
-        QTreeWidgetItem *stepItem = new QTreeWidgetItem(stageItem);
+
+        // --- UI 插入 ---
+        QTreeWidgetItem *stepItem = new QTreeWidgetItem();
         stepItem->setText(0, newStep.stepName);
-        // stepItem->setIcon(0, QIcon(":/icons/step.png")); // 给步骤一个图标
-        stepItem->setData(0, Qt::UserRole, newStep.id.toString()); // 存储步骤的ID
-        
-        stageItem->setExpanded(true); // 自动展开父节点
+        stepItem->setData(0, Qt::UserRole, newStep.id.toString());
+        if (insertPos == -1 || insertPos >= stageItem->childCount()) {
+            stageItem->addChild(stepItem);
+        } else {
+            stageItem->insertChild(insertPos, stepItem);
+        }
+        stageItem->setExpanded(true);
     }
 }
 
