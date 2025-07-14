@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     
     initProgramMap(); // 初始化程序类别和子类别的映射关系
     initParamMap();   // 初始化参数映射表
+    initFormFieldMaps(); // 初始化表单字段映射
 
     m_currentlyEditingItem = nullptr;
     m_lastParamConfigIndex = ui->paramConfig->currentIndex();
@@ -36,83 +37,102 @@ void MainWindow::initParamMap()
     m_paramMap.insert("请选择子类别", 2);
 }
 
-QJsonObject MainWindow::saveInputFormData()
+void MainWindow::initFormFieldMaps()
 {
-    // 1. 创建一个空的 JSON 对象，用于存放表单数据
-    QJsonObject formData;
-    
-    // （可选）进行数据校验
-    // if (stepName.isEmpty()) {
-    //     // 你可以在这里弹出警告或进行其他处理
-    //     // qWarning() << "警告：步骤名称为空！";
-    // }
+    // 初始化信息输入表单 (索引 0) 的字段映射
+    m_formFieldMaps[0]["stepName"] = "inputStepNameLineEdit";
+    m_formFieldMaps[0]["operatorName"] = "inputOperatorNameLineEdit";
 
-    // 2. 将获取到的数据存入 JSON 对象
-    //    使用英文作为 key 是一个非常好的习惯，便于跨平台和后续的程序处理
-    formData["stepName"] = ui->inputStepNameLineEdit->text();
-    formData["operatorName"] = ui->inputOperatorNameLineEdit->text();
+    // 初始化信息提示表单 (索引 1) 的字段映射
+    m_formFieldMaps[1]["stepName"] = "promptStepNameLineEdit";
+    m_formFieldMaps[1]["message"] = "promptMessageLineEdit";
+}
+
+QJsonObject MainWindow::saveFormData(int formIndex)
+{
+    QJsonObject formData;
+    // 获取当前索引对应的表单页面 widget
+    QWidget* formWidget = ui->paramConfig->widget(formIndex);
+
+    // 获取该表单的字段映射
+    QMap<QString, QString> fieldMap = m_formFieldMaps.value(formIndex);
+
+    // 遍历映射，保存数据
+    for (auto it = fieldMap.constBegin(); it != fieldMap.constEnd(); ++it) {
+        QString jsonKey = it.key();
+        QString widgetObjectName = it.value();
+
+        // 根据对象名查找对应的 UI 控件
+        QWidget* widget = formWidget->findChild<QWidget*>(widgetObjectName);
+        if (widget) {
+            // 根据控件类型获取值并存入 JSON
+            if (QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget)) {
+                formData[jsonKey] = lineEdit->text();
+            } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
+                 formData[jsonKey] = comboBox->currentText(); // 或者保存 currentIndex()
+            }
+            // TODO: 添加其他控件类型的处理，如 QCheckBox, QSpinBox 等
+        }
+    }
     formData["programCategory"] = ui->programCategory->currentText();
     formData["subCategory"] = ui->subCategory->currentText();
-
-    // 4. 返回这个包含所有数据的 JSON 对象
     return formData;
 }
 
-QJsonObject MainWindow::savePromptFormData()
+void MainWindow::loadFormData(int formIndex, const QJsonObject& formData)
 {
-    // 1. 创建一个空的 JSON 对象，用于存放表单数据
-    QJsonObject formData;
-    
-    // （可选）进行数据校验
-    // if (stepName.isEmpty()) {
-    //     // 你可以在这里弹出警告或进行其他处理
-    //     // qWarning() << "警告：步骤名称为空！";
-    // }
+    // 获取当前索引对应的表单页面 widget
+    QWidget* formWidget = ui->paramConfig->widget(formIndex);
 
-    // 2. 将获取到的数据存入 JSON 对象
-    //    使用英文作为 key 是一个非常好的习惯，便于跨平台和后续的程序处理
+    // 获取该表单的字段映射
+    QMap<QString, QString> fieldMap = m_formFieldMaps.value(formIndex);
 
-    formData["programCategory"] = ui->programCategory->currentText();
-    formData["subCategory"] = ui->subCategory->currentText();
+    // 遍历映射，加载数据
+    for (auto it = fieldMap.constBegin(); it != fieldMap.constEnd(); ++it) {
+        QString jsonKey = it.key();
+        QString widgetObjectName = it.value();
 
-    formData["stepName"] = ui->promptStepNameLineEdit->text();
-    formData["message"] = ui->promptMessageLineEdit->text();
-
-    // 4. 返回这个包含所有数据的 JSON 对象
-    return formData;
+        if (formData.contains(jsonKey)) {
+            // 根据对象名查找对应的 UI 控件
+            QWidget* widget = formWidget->findChild<QWidget*>(widgetObjectName);
+            if (widget) {
+                // 根据控件类型设置值
+                 if (QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget)) {
+                    lineEdit->setText(formData[jsonKey].toString());
+                } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
+                    // 根据文本设置当前项，或者根据索引设置
+                    comboBox->setCurrentText(formData[jsonKey].toString());
+                }
+                // TODO: 添加其他控件类型的处理
+            }
+        }
+    }
+    ui->programCategory->setCurrentText(formData["programCategory"].toString());
+    ui->subCategory->setCurrentText(formData["subCategory"].toString());
 }
 
-void MainWindow::loadInputFormData(QJsonObject &formData)
+void MainWindow::clearFormData(int formIndex)
 {
-    // 1. 检查 formData 是否包含所需的键
-    if (formData.contains("stepName")) {
-        ui->inputStepNameLineEdit->setText(formData["stepName"].toString());
-    }
-    if (formData.contains("operatorName")) {
-        ui->inputOperatorNameLineEdit->setText(formData["operatorName"].toString());
-    }
-    if (formData.contains("programCategory")) {
-        ui->programCategory->setCurrentText(formData["programCategory"].toString());
-    }
-    if (formData.contains("subCategory")) {
-        ui->subCategory->setCurrentText(formData["subCategory"].toString());
-    }
-}
+    // 获取当前索引对应的表单页面 widget
+    QWidget* formWidget = ui->paramConfig->widget(formIndex);
 
-void MainWindow::loadPromptFormData(QJsonObject &formData)
-{
-    // 1. 检查 formData 是否包含所需的键
-    if (formData.contains("stepName")) {
-        ui->promptStepNameLineEdit->setText(formData["stepName"].toString());
-    }
-    if (formData.contains("message")) {
-        ui->promptMessageLineEdit->setText(formData["message"].toString());
-    }
-    if (formData.contains("programCategory")) {
-        ui->programCategory->setCurrentText(formData["programCategory"].toString());
-    }
-    if (formData.contains("subCategory")) {
-        ui->subCategory->setCurrentText(formData["subCategory"].toString());
+    // 获取该表单的字段映射
+    QMap<QString, QString> fieldMap = m_formFieldMaps.value(formIndex);
+
+    // 遍历映射，清空数据
+    for (auto it = fieldMap.constBegin(); it != fieldMap.constEnd(); ++it) {
+        QString widgetObjectName = it.value();
+        QWidget* widget = formWidget->findChild<QWidget*>(widgetObjectName);
+        if (widget) {
+            // 根据控件类型清空值
+            if (QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget)) {
+                lineEdit->clear();
+            } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
+                // 重置 ComboBox，例如设置为第一个项
+                comboBox->setCurrentIndex(0);
+            }
+            // TODO: 添加其他控件类型的处理
+        }
     }
 }
 
@@ -237,17 +257,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int colu
                 if (stage.id == stageId) {
                     for (auto it = stage.steps.begin(); it != stage.steps.end(); ++it) {
                         if (it->id == stepId) {
-                            switch (it->formIndex)
-                            {
-                                case 0: // 假设这个表单是 QStackedWidget 的第 0 页
-                                    loadInputFormData(it->formData); // 在这里调用
-                                    break;
-
-                                case 1: // 假设这个表单是 QStackedWidget 的第 1 页
-                                    loadPromptFormData(it->formData); // 在这里调用
-                                    break;
-                                
-                            }
+                            loadFormData(it->formIndex, it->formData);
                             ui->paramConfig->setCurrentIndex(it->formIndex);
                             m_currentlyEditingItem = item; // 记录当前正在编辑的步骤项
                             break;
@@ -285,17 +295,7 @@ void MainWindow::on_submitButton_clicked()
     // 2. 收集表单数据
     int formIndex = ui->paramConfig->currentIndex();
     QJsonObject formData;
-    switch (formIndex)
-    {
-        case 0:
-            formData = saveInputFormData();
-            break;
-        case 1:
-            formData = savePromptFormData();
-            break;
-        case 2:
-            return;
-    }
+    formData = saveFormData(formIndex);
 
     QString stepName = formData["stepName"].toString();
 
@@ -358,19 +358,7 @@ void MainWindow::on_resetButton_clicked()
 {
     m_currentlyEditingItem = nullptr; // 清空当前正在编辑的步骤项
     int formIndex = ui->paramConfig->currentIndex();
-    switch (formIndex)
-    {
-        case 0: // 假设这个表单是 QStackedWidget 的第 0 页
-            ui->inputStepNameLineEdit->clear();
-            ui->inputOperatorNameLineEdit->clear();
-            break;
-
-        case 1: // 假设这个表单是 QStackedWidget 的第 1 页
-            ui->promptStepNameLineEdit->clear();
-            ui->promptMessageLineEdit->clear();
-            break;
-        
-    }
+    clearFormData(formIndex); // 清空当前表单数据
 }
 
 // 新增槽函数：切换页面时清空上一个页面的编辑框
