@@ -18,17 +18,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     addstagedialog.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    startwindow.cpp
 
 HEADERS += \
     addstagedialog.h \
     mainwindow.h \
     processstage.h \
-    processstep.h
+    processstep.h \
+    startwindow.h
 
 FORMS += \
     addstagedialog.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    startwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

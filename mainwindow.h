@@ -15,8 +15,14 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+signals:
+    void windowClosed(); // 当窗口关闭时，将发出此信号
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::MainWindow *ui;

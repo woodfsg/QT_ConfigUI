@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1359</width>
-    <height>693</height>
+    <width>783</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -269,165 +269,18 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QLabel" name="filePathLabel">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>70</y>
-      <width>361</width>
-      <height>281</height>
+      <x>30</x>
+      <y>140</y>
+      <width>291</width>
+      <height>16</height>
      </rect>
     </property>
-    <row>
-     <property name="text">
-      <string>vddsv</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>新建行</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>dvsvsv</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>rfvv </string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>新建列</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>gfsf</string>
-     </property>
-    </column>
-    <item row="0" column="0">
-     <property name="text">
-      <string>vdva </string>
-     </property>
-    </item>
-    <item row="0" column="12">
-     <property name="text">
-      <string>dvds</string>
-     </property>
-    </item>
-    <item row="12" column="0">
-     <property name="text">
-      <string>vdsaedv</string>
-     </property>
-    </item>
-    <item row="12" column="12">
-     <property name="text">
-      <string>dvsv</string>
-     </property>
-    </item>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -435,7 +288,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1359</width>
+     <width>783</width>
      <height>23</height>
     </rect>
    </property>

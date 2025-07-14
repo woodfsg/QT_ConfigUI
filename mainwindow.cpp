@@ -3,11 +3,13 @@
 #include "addstagedialog.h"
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const QString &filePath, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->filePathLabel->setText(filePath);
     
     initProgramMap(); // 初始化程序类别和子类别的映射关系
     initParamMap();   // 初始化参数映射表
@@ -20,6 +22,15 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    qDebug() << "MainWindow 正在关闭，发出 windowClosed 信号。";
+    // 发出信号，通知关心此事的其他对象
+    emit windowClosed();
+    // 接受关闭事件，让窗口正常关闭
+    event->accept();
 }
 
 void MainWindow::initProgramMap()
