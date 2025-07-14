@@ -1,5 +1,6 @@
 #include "addstagedialog.h"
 #include "ui_addstagedialog.h"
+#include <QJsonObject>
 
 
 AddStageDialog::AddStageDialog(QWidget *parent) :
@@ -14,12 +15,11 @@ AddStageDialog::~AddStageDialog()
     delete ui;
 }
 
-QString AddStageDialog::stageName() const
-{
-    return ui->stageName->text();
-}
 
-QString AddStageDialog::stageType() const
+QJsonObject AddStageDialog::getStageInfo() const
 {
-    return ui->stageType->currentText();
+    QJsonObject stageInfo;
+    stageInfo["stageName"] = ui->stageName->text();
+    stageInfo["stageType"] = ui->stageType->currentText();
+    return stageInfo;
 }

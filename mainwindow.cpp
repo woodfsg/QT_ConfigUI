@@ -141,9 +141,12 @@ void MainWindow::on_addStageButton_clicked()
     // 3. 判断用户是否点击了 "OK"
     if (result == QDialog::Accepted)
     {
+
+        QJsonObject stageInfo = stageDialog.getStageInfo();
+
         // 如果是，就调用新的接口函数获取数据
-        QString name = stageDialog.stageName();
-        QString type = stageDialog.stageType();
+        QString name = stageInfo["stageName"].toString();
+        QString type = stageInfo["stageType"].toString();
 
         ProcessStage newStage;
         newStage.stageName = name+"_"+type;
@@ -212,8 +215,10 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int colu
             int result = stageDialog.exec();
             if (result == QDialog::Accepted)
             {
-                QString name = stageDialog.stageName();
-                QString type = stageDialog.stageType();
+                QJsonObject stageInfo = stageDialog.getStageInfo();
+
+                QString name = stageInfo["stageName"].toString();
+                QString type = stageInfo["stageType"].toString();
                 item->setText(column, name + "_" + type);
                 // 更新数据模型中的阶段名称
                 QUuid stageId(item->data(column, Qt::UserRole).toString());

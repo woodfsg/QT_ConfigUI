@@ -15,8 +15,7 @@ public:
     explicit AddStageDialog(QWidget *parent = nullptr);
     ~AddStageDialog();
 
-    QString stageName() const;
-    QString stageType() const;
+    QJsonObject getStageInfo() const;
 
 private:
     Ui::AddStageDialog *ui;
