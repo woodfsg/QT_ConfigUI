@@ -9,7 +9,8 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->filePathLabel->setText(filePath);
+    m_filePath = filePath; // 存储文件路径
+    ui->filePathLabel->setText(m_filePath);
     
     initProgramMap(); // 初始化程序类别和子类别的映射关系
     initParamMap();   // 初始化参数映射表
@@ -26,7 +27,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    qDebug() << "MainWindow 正在关闭，发出 windowClosed 信号。";
     // 发出信号，通知关心此事的其他对象
     emit windowClosed();
     // 接受关闭事件，让窗口正常关闭
@@ -184,7 +184,7 @@ void MainWindow::on_addStageButton_clicked()
         m_processStages.append(newStage);
 
         // 3. 在 QTreeWidget 中创建对应的顶级节点
-        QTreeWidgetItem *stageItem = new QTreeWidgetItem(ui->treeWidget);
+        QTreeWidgetItem *stageItem = new QTreeWidgetItem(ui->stageTree);
         stageItem->setText(0, newStage.stageName);
         // stageItem->setIcon(0, QIcon(":/icons/stage.png")); // 可以给阶段一个不同的图标
 
@@ -196,11 +196,11 @@ void MainWindow::on_addStageButton_clicked()
 
 void MainWindow::on_deleteItemButton_clicked()
 {
-    QTreeWidgetItem* currentItem = ui->treeWidget->currentItem();
+    QTreeWidgetItem* currentItem = ui->stageTree->currentItem();
     if (currentItem) { // 确保有节点被选中
         if (currentItem->parent() == nullptr) {
             // 如果当前选中的是顶层节点
-            int index = ui->treeWidget->indexOfTopLevelItem(currentItem);
+            int index = ui->stageTree->indexOfTopLevelItem(currentItem);
             if (index != -1) {
                 // 删除ProcessStage数据模型中的阶段
                 QUuid stageId(currentItem->data(0, Qt::UserRole).toString());
@@ -211,7 +211,7 @@ void MainWindow::on_deleteItemButton_clicked()
                     }
                 }
                 // 从树形视图中删除当前顶层节点
-                QTreeWidgetItem* takenItem = ui->treeWidget->takeTopLevelItem(index);
+                QTreeWidgetItem* takenItem = ui->stageTree->takeTopLevelItem(index);
                 delete takenItem; // 同样会级联删除所有子节点
             }
         } else {
@@ -237,7 +237,7 @@ void MainWindow::on_deleteItemButton_clicked()
     return;
 }
 
-void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void MainWindow::on_stageTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     if (item) {
         if (item->parent() == nullptr) {
@@ -285,7 +285,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int colu
 void MainWindow::on_submitButton_clicked()
 {
     // 1. 确定目标阶段和插入位置
-    QTreeWidgetItem *currentItem = ui->treeWidget->currentItem();
+    QTreeWidgetItem *currentItem = ui->stageTree->currentItem();
     if (currentItem == nullptr) {
         return;
     }

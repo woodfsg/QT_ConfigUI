@@ -32,6 +32,7 @@ private:
     QList<ProcessStage> m_processStages;    // 存储所有阶段和步骤的数据模型
     QTreeWidgetItem* m_currentlyEditingItem; // 当前正在编辑的步骤项
     int m_lastParamConfigIndex; // 上一个参数配置表单的索引
+    QString m_filePath; // 用于存储文件路径
 
     QJsonObject saveFormData(int formIndex);
     void loadFormData(int formIndex, const QJsonObject& formData);
@@ -46,7 +47,7 @@ private slots:
     void on_subCategory_currentTextChanged(const QString &text);
     void on_addStageButton_clicked();
     void on_deleteItemButton_clicked();
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+    void on_stageTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
     void on_submitButton_clicked();
     void on_resetButton_clicked();
     void on_paramConfig_currentChanged(int index);

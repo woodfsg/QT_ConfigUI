@@ -20,6 +20,8 @@ private:
     Ui::StartWindow *ui;
     MainWindow *m_mainWindow;
 
+    void init_programTable();
+
 private slots:
     void on_editProgramPushButton_clicked();
     void handleMainWindowClosed();
