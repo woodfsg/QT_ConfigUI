@@ -1,6 +1,10 @@
 #include "startwindow.h"
 #include "ui_startwindow.h"
 #include <QHeaderView>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QSettings>
+#include <QLineEdit>
 
 StartWindow::StartWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,6 +14,8 @@ StartWindow::StartWindow(QWidget *parent) :
     ui->setupUi(this);
 
     init_programTable(); // 初始化程序表格
+    loadCategories(); // 加载类别
+    updateComboBox(); // 更新下拉框
 }
 
 StartWindow::~StartWindow()
@@ -74,4 +80,86 @@ void StartWindow::on_editProgramPushButton_clicked()
 
     // 4. 显示 MainWindow
     m_mainWindow->show();
+}
+
+void StartWindow::loadCategories()
+{
+    QSettings settings("ConfigUI", "StartWindow");
+    m_categories = settings.value("categories", QStringList()).toStringList();
+    
+    // 如果没有保存的类别，添加一些默认类别
+    // if (m_categories.isEmpty()) {
+    //     m_categories << "默认类别" << "测试类别" << "系统类别";
+    // }
+}
+
+void StartWindow::saveCategories()
+{
+    QSettings settings("ConfigUI", "StartWindow");
+    settings.setValue("categories", m_categories);
+}
+
+void StartWindow::updateComboBox()
+{
+    ui->showTypeComboBox->clear();
+    ui->showTypeComboBox->addItems(m_categories);
+}
+
+void StartWindow::on_addTypePushButton_clicked()
+{
+    QInputDialog inputDialog(this);
+    inputDialog.setWindowTitle("新增类别");
+    inputDialog.setLabelText("请输入类别名称:");
+    inputDialog.setTextValue("");
+    inputDialog.setInputMode(QInputDialog::TextInput);
+
+    // 去掉问号
+    inputDialog.setWindowFlags(inputDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    bool ok = false;
+    if (inputDialog.exec() == QDialog::Accepted) {
+        ok = true;
+    }
+    QString categoryName = inputDialog.textValue();
+
+    if (ok && !categoryName.isEmpty()) {
+        // 检查类别是否已存在
+        if (m_categories.contains(categoryName)) {
+            return;
+        }
+        
+        // 添加新类别
+        m_categories.append(categoryName);
+        updateComboBox();
+        saveCategories();
+        
+        // 设置新添加的类别为当前选中项
+        ui->showTypeComboBox->setCurrentText(categoryName);
+    }
+}
+
+void StartWindow::on_deleteCurrentTypePushButton_clicked()
+{
+    if (m_categories.isEmpty()) {
+        QMessageBox::warning(this, "警告", "没有可删除的类别！");
+        return;
+    }
+    
+    QString currentCategory = ui->showTypeComboBox->currentText();
+    if (currentCategory.isEmpty()) {
+        QMessageBox::warning(this, "警告", "请选择要删除的类别！");
+        return;
+    }
+    
+    // 确认删除
+    int ret = QMessageBox::question(this, 
+                                   "确认删除", 
+                                   QString("确定要删除类别 \"%1\" 吗？").arg(currentCategory),
+                                   QMessageBox::Yes | QMessageBox::No);
+    
+    if (ret == QMessageBox::Yes) {
+        m_categories.removeAll(currentCategory);
+        updateComboBox();
+        saveCategories();
+    }
 }
