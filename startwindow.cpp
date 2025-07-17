@@ -5,17 +5,25 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QLineEdit>
+#include <QDir>
+#include <algorithm>
+
+const int FILES_PER_PAGE = 10; // 每页显示的文件数量
 
 StartWindow::StartWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::StartWindow),
-    m_mainWindow(nullptr) // 初始化 m_mainWindow 为 nullptr
+    m_mainWindow(nullptr)
 {
     ui->setupUi(this);
 
-    init_programTable(); // 初始化程序表格
-    loadCategories(); // 加载类别
-    updateComboBox(); // 更新下拉框
+    init_programTable();
+    loadCategories();
+    updateComboBox();
+    
+    // 加载程序文件并显示第一页
+    loadProgramFiles();
+
 }
 
 StartWindow::~StartWindow()
@@ -26,29 +34,16 @@ StartWindow::~StartWindow()
 void StartWindow::init_programTable()
 {
     //设置表格的列宽
-    ui->programTable->setColumnWidth(0, 50);
-    ui->programTable->setColumnWidth(3, 150);
+    ui->programTable->setColumnWidth(2, 150);
     QHeaderView *hor_header = ui->programTable->horizontalHeader();
+    hor_header->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     hor_header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-    hor_header->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    hor_header->setSectionResizeMode(4, QHeaderView::Stretch);
+    hor_header->setSectionResizeMode(3, QHeaderView::Stretch);
     // 设置表格的行高
     QHeaderView *ver_header = ui->programTable->verticalHeader();
     ver_header->setSectionResizeMode(QHeaderView::Stretch);
     //设置表格的行标居中
     ver_header->setDefaultAlignment(Qt::AlignCenter);
-
-
-    // 设置表格的 ToolTip
-    // for (int row = 0; row < ui->programTable->rowCount(); ++row) {
-    //     for (int col = 0; col < ui->programTable->columnCount(); ++col) {
-    //         QTableWidgetItem *item = ui->programTable->item(row, col);
-    //         if (item) {
-    //             // 将单元格自身的文本设置为它的 ToolTip
-    //             item->setToolTip(item->text());
-    //         }
-    //     }
-    // }
 }
 
 void StartWindow::handleMainWindowClosed()
@@ -161,5 +156,105 @@ void StartWindow::on_deleteCurrentTypePushButton_clicked()
         m_categories.removeAll(currentCategory);
         updateComboBox();
         saveCategories();
+    }
+}
+
+void StartWindow::loadProgramFiles()
+{
+    // 清空文件列表
+    m_sortedFiles.clear();
+    
+    // 检查并创建目录（如果不存在）
+    QDir dir(m_programFilesPath);
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+
+    // 获取所有.json文件
+    QStringList filters;
+    filters << "*.json";
+    m_sortedFiles = dir.entryList(filters, QDir::Files | QDir::NoDotAndDotDot);
+
+    // 根据创建时间排序
+    std::sort(m_sortedFiles.begin(), m_sortedFiles.end(), 
+        [](const QString& a, const QString& b) {
+            QString timeA = a.split("_")[2];
+            QString timeB = b.split("_")[2];
+            return timeA < timeB;
+        });
+
+    // 更新页面树
+    updatePageTree();
+    // 显示第一页的文件
+    displayFilesForPage(1);
+}
+
+void StartWindow::updatePageTree()
+{
+    // 清空页面树
+    ui->pageTree->clear();
+
+    // 计算总页数
+    int totalPages = (m_sortedFiles.size() + FILES_PER_PAGE - 1) / FILES_PER_PAGE;
+
+    // 直接添加页数为顶层节点
+    for (int i = 1; i <= totalPages; ++i) {
+        QTreeWidgetItem* pageItem = new QTreeWidgetItem(ui->pageTree);
+        pageItem->setText(0, QString::number(i));
+    }
+}
+
+void StartWindow::displayFilesForPage(int page)
+{
+    // 清空表格
+    ui->programTable->clearContents();
+    for (int i = 0; i < ui->programTable->rowCount(); ++i) {
+        ui->programTable->setVerticalHeaderItem(i, new QTableWidgetItem(""));
+    }
+
+    // 计算起始和结束索引
+    int startIndex = (page - 1) * FILES_PER_PAGE;
+    int endIndex = qMin(startIndex + FILES_PER_PAGE, m_sortedFiles.size());
+
+    // 显示文件属性
+    for (int i = startIndex; i < endIndex; i++) {
+        QString category, name, time, description;
+        parseFileAttributes(m_sortedFiles[i], category, name, time, description);
+
+        // 设置行号（从1开始）
+        QTableWidgetItem* indexItem = new QTableWidgetItem(QString::number(i + 1));
+        ui->programTable->setVerticalHeaderItem(i - startIndex, indexItem);
+
+        // 设置各列的值
+        ui->programTable->setItem(i - startIndex, 0, new QTableWidgetItem(category));
+        ui->programTable->setItem(i - startIndex, 1, new QTableWidgetItem(name));
+        ui->programTable->setItem(i - startIndex, 2, new QTableWidgetItem(time));
+        ui->programTable->setItem(i - startIndex, 3, new QTableWidgetItem(description));
+    }
+}
+
+void StartWindow::parseFileAttributes(const QString& fileName, QString& category, 
+                                    QString& name, QString& time, QString& description)
+{
+    // 移除.json后缀
+    QString baseName = fileName;
+    baseName.chop(5); // 移除".json"
+
+    // 分割文件名获取属性
+    QStringList parts = baseName.split("_");
+    if (parts.size() >= 4) {
+        category = parts[0];
+        name = parts[1];
+        time = parts[2];
+        description = parts[3];
+    }
+}
+
+void StartWindow::on_pageTree_itemClicked(QTreeWidgetItem *item, int column)
+{
+    // 只处理顶层节点的点击
+    if (item->parent() == nullptr) {
+        int page = item->text(column).toInt();
+        displayFilesForPage(page);
     }
 }

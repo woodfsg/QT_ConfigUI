@@ -1,2 +1,2 @@
-Copyright (c) 2025 Hui Zhang, Fudan University
+Copyright (c) 2025 Zhang Hui, Fudan University
 ConfigUI using QT
