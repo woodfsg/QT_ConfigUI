@@ -165,6 +165,8 @@ void MainWindow::on_addStageButton_clicked()
 {
     // 1. 创建 AddStageDialog 的实例，变量名也相应修改
     AddStageDialog stageDialog(this);
+    stageDialog.setWindowTitle("添加阶段");
+    stageDialog.setWindowFlags(stageDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // 2. 以模态方式显示对话框
     int result = stageDialog.exec();
@@ -243,6 +245,8 @@ void MainWindow::on_stageTree_itemDoubleClicked(QTreeWidgetItem *item, int colum
         if (item->parent() == nullptr) {
             // 如果当前选中的是顶层节点
             AddStageDialog stageDialog(this);
+            stageDialog.setWindowTitle("修改阶段");
+            stageDialog.setWindowFlags(stageDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
             int result = stageDialog.exec();
             if (result == QDialog::Accepted)
             {
