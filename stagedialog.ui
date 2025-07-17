@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddStageDialog</class>
- <widget class="QDialog" name="AddStageDialog">
+ <class>StageDialog</class>
+ <widget class="QDialog" name="StageDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -81,7 +81,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>AddStageDialog</receiver>
+   <receiver>StageDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -97,7 +97,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>AddStageDialog</receiver>
+   <receiver>StageDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

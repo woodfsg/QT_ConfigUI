@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "addstagedialog.h"
+#include "stagedialog.h"
 #include <QDebug>
 
 MainWindow::MainWindow(const QString &filePath, QWidget *parent)
@@ -163,8 +163,8 @@ void MainWindow::on_subCategory_currentTextChanged(const QString &text)
 
 void MainWindow::on_addStageButton_clicked()
 {
-    // 1. 创建 AddStageDialog 的实例，变量名也相应修改
-    AddStageDialog stageDialog(this);
+    // 1. 创建 StageDialog 的实例，变量名也相应修改
+    StageDialog stageDialog(this);
     stageDialog.setWindowTitle("添加阶段");
     stageDialog.setWindowFlags(stageDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
@@ -244,7 +244,7 @@ void MainWindow::on_stageTree_itemDoubleClicked(QTreeWidgetItem *item, int colum
     if (item) {
         if (item->parent() == nullptr) {
             // 如果当前选中的是顶层节点
-            AddStageDialog stageDialog(this);
+            StageDialog stageDialog(this);
             stageDialog.setWindowTitle("修改阶段");
             stageDialog.setWindowFlags(stageDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
             int result = stageDialog.exec();

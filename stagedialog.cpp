@@ -1,22 +1,22 @@
-#include "addstagedialog.h"
-#include "ui_addstagedialog.h"
+#include "stagedialog.h"
+#include "ui_stagedialog.h"
 #include <QJsonObject>
 
 
-AddStageDialog::AddStageDialog(QWidget *parent) :
+StageDialog::StageDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AddStageDialog)
+    ui(new Ui::StageDialog)
 {
     ui->setupUi(this);
 }
 
-AddStageDialog::~AddStageDialog()
+StageDialog::~StageDialog()
 {
     delete ui;
 }
 
 
-QJsonObject AddStageDialog::getStageInfo() const
+QJsonObject StageDialog::getStageInfo() const
 {
     QJsonObject stageInfo;
     stageInfo["stageName"] = ui->stageName->text();

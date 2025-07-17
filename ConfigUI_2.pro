@@ -16,21 +16,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    addstagedialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    programdialog.cpp \
+    stagedialog.cpp \
     startwindow.cpp
 
 HEADERS += \
-    addstagedialog.h \
     mainwindow.h \
     processstage.h \
     processstep.h \
+    programdialog.h \
+    stagedialog.h \
     startwindow.h
 
 FORMS += \
-    addstagedialog.ui \
     mainwindow.ui \
+    programdialog.ui \
+    stagedialog.ui \
     startwindow.ui
 
 # Default rules for deployment.

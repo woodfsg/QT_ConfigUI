@@ -4,21 +4,21 @@
 #include <QDialog>
 
 namespace Ui {
-class AddStageDialog;
+class StageDialog;
 }
 
-class AddStageDialog : public QDialog
+class StageDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit AddStageDialog(QWidget *parent = nullptr);
-    ~AddStageDialog();
+    explicit StageDialog(QWidget *parent = nullptr);
+    ~StageDialog();
 
     QJsonObject getStageInfo() const;
 
 private:
-    Ui::AddStageDialog *ui;
+    Ui::StageDialog *ui;
 
 };
 
