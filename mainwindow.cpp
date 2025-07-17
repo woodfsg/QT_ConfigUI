@@ -43,20 +43,20 @@ void MainWindow::initProgramMap()
 
 void MainWindow::initParamMap()
 {
-    m_paramMap.insert("苹果", 0);
-    m_paramMap.insert("胡萝卜", 1);
-    m_paramMap.insert("请选择子类别", 2);
+    m_paramMap.insert("苹果", FormType::FORM_INPUT);
+    m_paramMap.insert("胡萝卜", FormType::FORM_PROMPT);
+    m_paramMap.insert("请选择子类别", FormType::FORM_DEFAULT);
 }
 
 void MainWindow::initFormFieldMaps()
 {
-    // 初始化信息输入表单 (索引 0) 的字段映射
-    m_formFieldMaps[0]["stepName"] = "inputStepNameLineEdit";
-    m_formFieldMaps[0]["operatorName"] = "inputOperatorNameLineEdit";
+    // 初始化信息输入表单的字段映射
+    m_formFieldMaps[FormType::FORM_INPUT]["stepName"] = "inputStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_INPUT]["operatorName"] = "inputOperatorNameLineEdit";
 
-    // 初始化信息提示表单 (索引 1) 的字段映射
-    m_formFieldMaps[1]["stepName"] = "promptStepNameLineEdit";
-    m_formFieldMaps[1]["message"] = "promptMessageLineEdit";
+    // 初始化信息提示表单的字段映射
+    m_formFieldMaps[FormType::FORM_PROMPT]["stepName"] = "promptStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_PROMPT]["message"] = "promptMessageLineEdit";
 }
 
 QJsonObject MainWindow::saveFormData(int formIndex)
@@ -379,18 +379,16 @@ void MainWindow::on_resetButton_clicked()
 // 新增槽函数：切换页面时清空上一个页面的编辑框
 void MainWindow::on_paramConfig_currentChanged(int index)
 {
-    // 清空上一个页面的内容
     switch (m_lastParamConfigIndex)
     {
-        case 0:
+        case FormType::FORM_INPUT:
             ui->inputStepNameLineEdit->clear();
             ui->inputOperatorNameLineEdit->clear();
             break;
-        case 1:
+        case FormType::FORM_PROMPT:
             ui->promptStepNameLineEdit->clear();
             ui->promptMessageLineEdit->clear();
             break;
-        // 如有更多页面可继续添加
     }
     // 更新记录的上一个页面索引
     m_lastParamConfigIndex = index;

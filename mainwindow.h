@@ -15,6 +15,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    // 添加枚举定义
+    enum FormType {
+        FORM_INPUT = 0,
+        FORM_PROMPT = 1,
+        FORM_DEFAULT = 2
+    };
+
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
     ~MainWindow() override;
 
