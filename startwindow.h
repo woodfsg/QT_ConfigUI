@@ -24,6 +24,7 @@ private:
     static const int FILES_PER_PAGE = 10; // 每页显示的文件数
     QString m_programFilesPath = "C:/Users/li/Documents/ConfigUI/programFiles";
     QStringList m_sortedFiles; // 存储排序后的文件列表
+    int m_currentPage = 1; // 当前页码
 
     void init_programTable();
     void loadCategories(); // 从配置文件加载类别
@@ -36,11 +37,18 @@ private:
                            QString& name, QString& time, QString& description); // 解析文件属性
 
 private slots:
+    void on_addProgramPushButton_clicked();
+    void on_deleteProgramPushButton_clicked();
     void on_editProgramPushButton_clicked();
+    void on_editProgramContentPushButton_clicked();
     void on_addTypePushButton_clicked();
     void on_deleteCurrentTypePushButton_clicked();
     void handleMainWindowClosed();
     void on_pageTree_itemClicked(QTreeWidgetItem *item, int column); // 处理页面点击
+
+private:
+    QString createFileName(const QString& category, const QString& name, 
+                         const QString& description); // 创建文件名
 };
 
 #endif // STARTWINDOW_H

@@ -78,14 +78,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="reviseProgramPushButton">
+        <widget class="QPushButton" name="editProgramPushButton">
          <property name="text">
           <string>修改程序</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="editProgramPushButton">
+        <widget class="QPushButton" name="editProgramContentPushButton">
          <property name="text">
           <string>编辑程序内容</string>
          </property>

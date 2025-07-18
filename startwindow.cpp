@@ -1,11 +1,13 @@
 #include "startwindow.h"
 #include "ui_startwindow.h"
+#include "programdialog.h"
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
 #include <QLineEdit>
 #include <QDir>
+#include <QDateTime>
 #include <algorithm>
 
 const int FILES_PER_PAGE = 10; // 每页显示的文件数量
@@ -55,7 +57,7 @@ void StartWindow::handleMainWindowClosed()
     }
 }
 
-void StartWindow::on_editProgramPushButton_clicked()
+void StartWindow::on_editProgramContentPushButton_clicked()
 {
     QString filePath = "C:\\Users\\li\\Downloads\\github-recovery-codes.txt";
 
@@ -256,5 +258,113 @@ void StartWindow::on_pageTree_itemClicked(QTreeWidgetItem *item, int column)
     if (item->parent() == nullptr) {
         int page = item->text(column).toInt();
         displayFilesForPage(page);
+        m_currentPage = page; // 更新当前页码
     }
+}
+
+void StartWindow::on_addProgramPushButton_clicked()
+{
+    ProgramDialog dialog(this);
+    dialog.setCategories(m_categories);
+    
+    if (dialog.exec() == QDialog::Accepted) {
+        QJsonObject info = dialog.getProgramInfo();
+        QString category = info["programCategory"].toString();
+        QString name = info["programName"].toString();
+        QString description = info["programDescription"].toString();
+        
+        // 创建新文件
+        QString fileName = createFileName(category, name, description);
+        QFile file(m_programFilesPath + "/" + fileName);
+        if (file.open(QIODevice::WriteOnly)) {
+            file.close();
+            // 更新显示
+            loadProgramFiles();
+        }
+    }
+}
+
+void StartWindow::on_deleteProgramPushButton_clicked()
+{
+    // 获取选中的行
+    QList<QTableWidgetItem*> items = ui->programTable->selectedItems();
+    if (items.isEmpty()) {
+        QMessageBox::warning(this, "警告", "请选择要删除的程序！");
+        return;
+    }
+
+    int row = items.first()->row();
+    int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
+    
+    if (fileIndex < m_sortedFiles.size()) {
+        // 确认删除
+        int ret = QMessageBox::question(this, "确认删除", 
+            "确定要删除选中的程序吗？", 
+            QMessageBox::Yes | QMessageBox::No);
+        
+        if (ret == QMessageBox::Yes) {
+            // 删除文件
+            QFile file(m_programFilesPath + "/" + m_sortedFiles[fileIndex]);
+            if (file.remove()) {
+                // 更新显示
+                loadProgramFiles();
+            }
+        }
+    }
+}
+
+void StartWindow::on_editProgramPushButton_clicked()
+{
+    // 获取选中的行
+    QList<QTableWidgetItem*> items = ui->programTable->selectedItems();
+    if (items.isEmpty()) {
+        QMessageBox::warning(this, "警告", "请选择要修改的程序！");
+        return;
+    }
+
+    int row = items.first()->row();
+    int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
+    
+    if (fileIndex < m_sortedFiles.size()) {
+        QString category, name, time, description;
+        parseFileAttributes(m_sortedFiles[fileIndex], category, name, time, description);
+        
+        ProgramDialog dialog(this);
+        dialog.setCategories(m_categories);
+        dialog.setProgramInfo(category, name, description);
+        
+        if (dialog.exec() == QDialog::Accepted) {
+            QJsonObject info = dialog.getProgramInfo();
+            QString newCategory = info["programCategory"].toString();
+            QString newName = info["programName"].toString();
+            QString newDescription = info["programDescription"].toString();
+            
+            // 创建新文件名
+            QString newFileName = createFileName(newCategory, newName, newDescription);
+            QString oldFilePath = m_programFilesPath + "/" + m_sortedFiles[fileIndex];
+            QString newFilePath = m_programFilesPath + "/" + newFileName;
+            
+            // 重命名文件
+            QFile file(oldFilePath);
+            if (file.rename(newFilePath)) {
+                // 更新显示
+                loadProgramFiles();
+            }
+        }
+    }
+}
+
+QString StartWindow::createFileName(const QString& category, const QString& name, 
+                                 const QString& description)
+{
+    // 获取当前时间
+    QString timeStr = QDateTime::currentDateTime()
+                     .toString("yyyy-MM-dd HH-mm-ss");
+    
+    // 创建文件名
+    return QString("%1_%2_%3_%4.json")
+           .arg(category)
+           .arg(name)
+           .arg(timeStr)
+           .arg(description);
 }

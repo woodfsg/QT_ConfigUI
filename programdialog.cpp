@@ -21,3 +21,17 @@ QJsonObject ProgramDialog::getProgramInfo() const
     programInfo["programCategory"] = ui->programCategoryComboBox->currentText();
     return programInfo;
 }
+
+void ProgramDialog::setProgramInfo(const QString& category, const QString& name,
+                                   const QString& description)
+{
+    ui->programCategoryComboBox->setCurrentText(category);
+    ui->programNameLineEdit->setText(name);
+    ui->programDescriptionTextEdit->setText(description);
+}
+
+void ProgramDialog::setCategories(const QStringList& categories)
+{
+    ui->programCategoryComboBox->clear();
+    ui->programCategoryComboBox->addItems(categories);
+}
