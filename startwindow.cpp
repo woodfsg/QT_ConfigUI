@@ -348,7 +348,8 @@ void StartWindow::on_editProgramPushButton_clicked()
             QFile file(oldFilePath);
             if (file.rename(newFilePath)) {
                 // 更新显示
-                loadProgramFiles();
+                m_sortedFiles[fileIndex] = newFileName; // 更新文件列表
+                displayFilesForPage(m_currentPage); // 重新显示当前页
             }
         }
     }
