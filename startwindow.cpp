@@ -63,7 +63,16 @@ void StartWindow::handleMainWindowClosed()
 
 void StartWindow::on_editProgramContentPushButton_clicked()
 {
-    QString filePath = "C:\\Users\\li\\Downloads\\github-recovery-codes.txt";
+    // 获取选中的行
+    QList<QTableWidgetItem*> items = ui->programTable->selectedItems();
+    if (items.isEmpty()) {
+        QMessageBox::warning(this, "警告", "请选择要编辑的程序！");
+        return;
+    }
+
+    int row = items.first()->row();
+    int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
+    QString filePath = m_programFilesPath + "/" + m_sortedFiles[fileIndex];
 
     // 如果 m_mainWindow 还存在 (虽然不太可能，但这是好的编程习惯)
     if (m_mainWindow) {
@@ -276,6 +285,11 @@ void StartWindow::on_addProgramPushButton_clicked()
         QString category = info["programCategory"].toString();
         QString name = info["programName"].toString();
         QString description = info["programDescription"].toString();
+
+        if (category.isEmpty() || name.isEmpty()) {
+            QMessageBox::warning(this, "警告", "类别和名称不能为空！");
+            return;
+        }
         
         // 创建新文件
         QString fileName = createFileName(category, name, description);
@@ -357,6 +371,11 @@ void StartWindow::on_editProgramPushButton_clicked()
             QString newCategory = info["programCategory"].toString();
             QString newName = info["programName"].toString();
             QString newDescription = info["programDescription"].toString();
+
+            if (newCategory.isEmpty() || newName.isEmpty()) {
+                QMessageBox::warning(this, "警告", "类别和名称不能为空！");
+                return;
+            }
             
             // 创建新文件名
             QString newFileName = createFileName(newCategory, newName, newDescription);
