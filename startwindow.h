@@ -45,8 +45,9 @@ private slots:
     void on_deleteCurrentTypePushButton_clicked();
     void handleMainWindowClosed();
     void on_pageTree_itemClicked(QTreeWidgetItem *item, int column); // 处理页面点击
+    void on_exportPushButton_clicked();
 
-private:
+private:   
     QString createFileName(const QString& category, const QString& name, 
                          const QString& description); // 创建文件名
 };

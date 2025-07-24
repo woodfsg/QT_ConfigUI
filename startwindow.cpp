@@ -9,6 +9,10 @@
 #include <QDir>
 #include <QDateTime>
 #include <algorithm>
+#include <QFileDialog>
+#include <QStandardPaths>
+#include <QSet>
+#include <QDebug>
 
 const int FILES_PER_PAGE = 10; // 每页显示的文件数量
 
@@ -293,23 +297,38 @@ void StartWindow::on_deleteProgramPushButton_clicked()
         return;
     }
 
-    int row = items.first()->row();
-    int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
-    
-    if (fileIndex < m_sortedFiles.size()) {
-        // 确认删除
-        int ret = QMessageBox::question(this, "确认删除", 
-            "确定要删除选中的程序吗？", 
-            QMessageBox::Yes | QMessageBox::No);
-        
-        if (ret == QMessageBox::Yes) {
-            // 删除文件
-            QFile file(m_programFilesPath + "/" + m_sortedFiles[fileIndex]);
-            if (file.remove()) {
-                // 更新显示
-                loadProgramFiles();
+    QSet<int> selectedRows;
+    for (const QTableWidgetItem* item : items) {
+        selectedRows.insert(item->row());
+    }
+
+    int ret = QMessageBox::question(this, "确认删除", 
+                "确定要删除选中的程序吗？", 
+                QMessageBox::Yes | QMessageBox::No);
+
+    if (ret == QMessageBox::Yes) {
+        int successCount = 0;
+        int failureCount = 0;
+        for (int row : selectedRows) {
+            int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
+            if (fileIndex < m_sortedFiles.size()) {
+                // 删除文件
+                QFile file(m_programFilesPath + "/" + m_sortedFiles[fileIndex]);
+                if (file.remove()) {
+                    successCount++;
+                } else {
+                    failureCount++;
+                    qDebug() << "无法删除文件：" << m_programFilesPath + "/" + m_sortedFiles[fileIndex];
+                    
+                }
             }
         }
+
+        loadProgramFiles();
+
+        QMessageBox::information(this, "删除完成", 
+                                QString("成功删除 %1 个文件。\n失败 %2 个。")
+                                .arg(successCount).arg(failureCount));
     }
 }
 
@@ -368,4 +387,61 @@ QString StartWindow::createFileName(const QString& category, const QString& name
            .arg(name)
            .arg(timeStr)
            .arg(description);
+}
+
+// 导出按钮点击事件处理
+void StartWindow::on_exportPushButton_clicked()
+{
+    // 1. 获取选中的行
+    QList<QTableWidgetItem*> selectedItems = ui->programTable->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "警告", "请选择要导出的程序！");
+        return;
+    }
+
+    QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation); // 2. 获取下载文件夹路径
+
+    // 2. 弹出文件对话框选择导出目录
+    QString destDir = QFileDialog::getExistingDirectory(this, "选择导出目录",
+                                                       downloadPath, // 使用下载文件夹路径作为初始路径
+                                                       QFileDialog::ShowDirsOnly
+                                                       | QFileDialog::DontResolveSymlinks);
+
+    if (destDir.isEmpty()) {
+        return; // 用户取消了选择
+    }
+
+    // 3. 复制文件
+    // 使用 QSet 存储选中的行号，避免因选择多个单元格而重复处理同一行
+    QSet<int> selectedRows;
+    for (const QTableWidgetItem* item : selectedItems) {
+        selectedRows.insert(item->row());
+    }
+
+    int successCount = 0;
+    int failureCount = 0;
+
+    for (int row : selectedRows) {
+        // 计算文件在 m_sortedFiles 列表中的实际索引
+        int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
+        
+        if (fileIndex < m_sortedFiles.size()) {
+            QString sourceFileName = m_sortedFiles[fileIndex];
+            QString sourceFilePath = m_programFilesPath + "/" + sourceFileName;
+            QString destFilePath = destDir + "/" + sourceFileName;
+
+            // 执行复制操作
+            if (QFile::copy(sourceFilePath, destFilePath)) {
+                successCount++;
+            } else {
+                failureCount++;
+                qDebug() << "无法复制文件：" << sourceFilePath << " 到 " << destFilePath;
+            }
+        }
+    }
+
+    // 4. 显示结果
+    QMessageBox::information(this, "导出完成", 
+                             QString("成功导出 %1 个文件。\n失败 %2 个。")
+                             .arg(successCount).arg(failureCount));
 }

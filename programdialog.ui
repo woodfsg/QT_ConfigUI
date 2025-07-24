@@ -18,7 +18,7 @@
     <rect>
      <x>90</x>
      <y>70</y>
-     <width>212</width>
+     <width>218</width>
      <height>154</height>
     </rect>
    </property>
@@ -26,14 +26,14 @@
     <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>程序类别</string>
+       <string>*程序类别</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>程序名称</string>
+       <string>*程序名称</string>
       </property>
      </widget>
     </item>
