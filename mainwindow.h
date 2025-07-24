@@ -17,9 +17,9 @@ class MainWindow : public QMainWindow
 public:
     // 添加枚举定义
     enum FormType {
-        FORM_INPUT = 0,
-        FORM_PROMPT = 1,
-        FORM_DEFAULT = 2
+        FORM_DEFAULT = 0,
+        FORM_INPUT = 1,
+        FORM_PROMPT = 2,
     };
 
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);

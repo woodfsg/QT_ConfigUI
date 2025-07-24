@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>783</width>
+    <width>1122</width>
     <height>529</height>
    </rect>
   </property>
@@ -85,7 +85,7 @@
    <widget class="QWidget" name="verticalLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>680</x>
       <y>40</y>
       <width>391</width>
       <height>411</height>
@@ -148,10 +148,10 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>180</y>
+      <x>340</x>
+      <y>40</y>
       <width>301</width>
-      <height>271</height>
+      <height>411</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -168,8 +168,9 @@
      <item>
       <widget class="QStackedWidget" name="paramConfig">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
+       <widget class="QWidget" name="empty"/>
        <widget class="QWidget" name="inputPage">
         <widget class="QWidget" name="formLayoutWidget">
          <property name="geometry">
@@ -246,7 +247,6 @@
          </layout>
         </widget>
        </widget>
-       <widget class="QWidget" name="empty"/>
       </widget>
      </item>
      <item>
@@ -273,7 +273,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>140</y>
+      <y>310</y>
       <width>291</width>
       <height>16</height>
      </rect>
@@ -288,7 +288,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>783</width>
+     <width>1122</width>
      <height>23</height>
     </rect>
    </property>

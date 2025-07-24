@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "stagedialog.h"
 #include <QDebug>
+#include <QMessageBox>
 
 MainWindow::MainWindow(const QString &filePath, QWidget *parent)
     : QMainWindow(parent)
@@ -199,42 +200,53 @@ void MainWindow::on_addStageButton_clicked()
 void MainWindow::on_deleteItemButton_clicked()
 {
     QTreeWidgetItem* currentItem = ui->stageTree->currentItem();
-    if (currentItem) { // 确保有节点被选中
-        if (currentItem->parent() == nullptr) {
-            // 如果当前选中的是顶层节点
-            int index = ui->stageTree->indexOfTopLevelItem(currentItem);
-            if (index != -1) {
-                // 删除ProcessStage数据模型中的阶段
-                QUuid stageId(currentItem->data(0, Qt::UserRole).toString());
-                for (auto it = m_processStages.begin(); it != m_processStages.end(); ++it) {
-                    if (it->id == stageId) {
-                        m_processStages.erase(it); // 从数据模型中删除阶段
-                        break;
-                    }
-                }
-                // 从树形视图中删除当前顶层节点
-                QTreeWidgetItem* takenItem = ui->stageTree->takeTopLevelItem(index);
-                delete takenItem; // 同样会级联删除所有子节点
-            }
-        } else {
-            // 删除ProcessStep数据模型中的步骤
-            QUuid stepId(currentItem->data(0, Qt::UserRole).toString());
-            QUuid stageId(currentItem->parent()->data(0, Qt::UserRole).toString());
-            for (auto& stage : m_processStages) {   
-                if (stage.id == stageId) {
-                    for (auto it = stage.steps.begin(); it != stage.steps.end(); ++it) {
-                        if (it->id == stepId) {
-                            stage.steps.erase(it); // 从数据模型中删除步骤
-                            break;
-                        }
-                    }
+    if (currentItem == nullptr) {
+        QMessageBox::warning(this, "警告", "请选择要删除的阶段或步骤！");
+        return;
+    }
+
+    int ret = QMessageBox::question(this, "确认删除", 
+                "确定要删除选中的阶段或步骤吗？", 
+                QMessageBox::Yes | QMessageBox::No);
+    
+    if(!(ret == QMessageBox::Yes)) {
+        return; // 用户取消了删除
+    }
+
+    if (currentItem->parent() == nullptr) {
+        // 如果当前选中的是顶层节点
+        int index = ui->stageTree->indexOfTopLevelItem(currentItem);
+        if (index != -1) {
+            // 删除ProcessStage数据模型中的阶段
+            QUuid stageId(currentItem->data(0, Qt::UserRole).toString());
+            for (auto it = m_processStages.begin(); it != m_processStages.end(); ++it) {
+                if (it->id == stageId) {
+                    m_processStages.erase(it); // 从数据模型中删除阶段
                     break;
                 }
             }
-            // 从树形视图中删除当前节点
-            currentItem->parent()->removeChild(currentItem);
-            delete currentItem;
+            // 从树形视图中删除当前顶层节点
+            QTreeWidgetItem* takenItem = ui->stageTree->takeTopLevelItem(index);
+            delete takenItem; // 同样会级联删除所有子节点
         }
+    } else {
+        // 删除ProcessStep数据模型中的步骤
+        QUuid stepId(currentItem->data(0, Qt::UserRole).toString());
+        QUuid stageId(currentItem->parent()->data(0, Qt::UserRole).toString());
+        for (auto& stage : m_processStages) {   
+            if (stage.id == stageId) {
+                for (auto it = stage.steps.begin(); it != stage.steps.end(); ++it) {
+                    if (it->id == stepId) {
+                        stage.steps.erase(it); // 从数据模型中删除步骤
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        // 从树形视图中删除当前节点
+        currentItem->parent()->removeChild(currentItem);
+        delete currentItem;
     }
     return;
 }
@@ -291,6 +303,7 @@ void MainWindow::on_submitButton_clicked()
     // 1. 确定目标阶段和插入位置
     QTreeWidgetItem *currentItem = ui->stageTree->currentItem();
     if (currentItem == nullptr) {
+        QMessageBox::warning(this, "警告", "请先选择一个阶段或步骤！");
         return;
     }
 
@@ -335,6 +348,8 @@ void MainWindow::on_submitButton_clicked()
         }
         m_currentlyEditingItem->setText(0, stepName);
         m_currentlyEditingItem = nullptr;
+        // 弹出提示
+        QMessageBox::information(this, "提示", "步骤已更新！");
     } else {
         // --- 新增步骤 ---
         ProcessStep newStep;
@@ -366,6 +381,8 @@ void MainWindow::on_submitButton_clicked()
             stageItem->insertChild(insertPos, stepItem);
         }
         stageItem->setExpanded(true);
+        // 弹出提示
+        QMessageBox::information(this, "提示", "步骤已添加！");
     }
 }
 
