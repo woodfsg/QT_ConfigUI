@@ -19,6 +19,9 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent)
 
     m_currentlyEditingItem = nullptr;
     m_lastParamConfigIndex = ui->paramConfig->currentIndex();
+
+    // 启动时加载数据
+    loadStagesFromFile();
 }
 
 MainWindow::~MainWindow()
@@ -411,4 +414,79 @@ void MainWindow::on_paramConfig_currentChanged(int index)
     m_lastParamConfigIndex = index;
     // 清空当前正在编辑的步骤项
     m_currentlyEditingItem = nullptr; 
+}
+
+// “保存”按钮的槽函数
+void MainWindow::on_actionSave_triggered()
+{
+    saveStagesToFile();
+}
+
+// 将 m_processStages 中的数据保存到 JSON 文件
+void MainWindow::saveStagesToFile()
+{
+    QFile file(m_filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "错误", "无法打开文件进行写入: " + file.errorString());
+        return;
+    }
+
+    QJsonArray stagesArray;
+    for (const auto& stage : m_processStages) {
+        stagesArray.append(stage.toJson());
+    }
+
+    QJsonDocument doc(stagesArray);
+    file.write(doc.toJson(QJsonDocument::Indented));
+    file.close();
+
+    QMessageBox::information(this, "成功", "数据已成功保存到 " + m_filePath);
+}
+
+// 从 JSON 文件加载数据到 m_processStages
+void MainWindow::loadStagesFromFile()
+{
+    QFile file(m_filePath);
+    if (!file.exists()) {
+        return; // 文件不存在，不执行任何操作
+    }
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "错误", "无法打开文件进行读取: " + file.errorString());
+        return;
+    }
+
+    QByteArray data = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (doc.isNull() || doc.isEmpty()) {
+        return;
+    }
+
+    m_processStages.clear();
+    QJsonArray stagesArray = doc.array();
+    for (const QJsonValue& value : stagesArray) {
+        m_processStages.append(ProcessStage::fromJson(value.toObject()));
+    }
+
+    // 更新树形视图
+    populateStageTree();
+}
+
+// 根据 m_processStages 的数据刷新 stageTree
+void MainWindow::populateStageTree()
+{
+    ui->stageTree->clear(); // 清空现有的树
+    for (const auto& stage : m_processStages) {
+        QTreeWidgetItem *stageItem = new QTreeWidgetItem(ui->stageTree);
+        stageItem->setText(0, stage.stageName);
+        stageItem->setData(0, Qt::UserRole, stage.id.toString());
+
+        for (const auto& step : stage.steps) {
+            QTreeWidgetItem *stepItem = new QTreeWidgetItem(stageItem);
+            stepItem->setText(0, step.stepName);
+            stepItem->setData(0, Qt::UserRole, step.id.toString());
+        }
+        stageItem->setExpanded(true);
+    }
 }

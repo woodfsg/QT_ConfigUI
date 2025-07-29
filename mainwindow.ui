@@ -292,14 +292,20 @@
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuadd">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>操作</string>
+     <string>文件</string>
     </property>
+    <addaction name="actionSave"/>
    </widget>
-   <addaction name="menuadd"/>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSave">
+   <property name="text">
+    <string>保存</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

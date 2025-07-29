@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QTreeWidget>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+#include <QJsonDocument>
 #include "processstage.h"
 
 QT_BEGIN_NAMESPACE
@@ -46,10 +50,16 @@ private:
     void clearFormData(int formIndex);
 
     void initProgramMap(); // 初始化程序类别和子类别的映射关系
-    void initParamMap(); 
+    void initParamMap();
     void initFormFieldMaps();
 
+    // 新增的用于文件操作和UI更新的函数
+    void saveStagesToFile();
+    void loadStagesFromFile();
+    void populateStageTree();
+
 private slots:
+    void on_actionSave_triggered(); 
     void on_programCategory_currentTextChanged(const QString &text);
     void on_subCategory_currentTextChanged(const QString &text);
     void on_addStageButton_clicked();
