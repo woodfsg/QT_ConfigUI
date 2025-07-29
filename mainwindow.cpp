@@ -473,6 +473,92 @@ void MainWindow::loadStagesFromFile()
     populateStageTree();
 }
 
+// “上移”按钮的槽函数
+void MainWindow::on_upButton_clicked()
+{
+    QTreeWidgetItem *currentItem = ui->stageTree->currentItem();
+    if (!currentItem) {
+        QMessageBox::warning(this, "提示", "请选择一个要移动的项。");
+        return;
+    }
+
+    if (currentItem->parent() == nullptr) {
+        // --- 移动阶段 ---
+        int index = ui->stageTree->indexOfTopLevelItem(currentItem);
+        if (index > 0) {
+            // 1. 更新UI
+            QTreeWidgetItem *item = ui->stageTree->takeTopLevelItem(index);
+            ui->stageTree->insertTopLevelItem(index - 1, item);
+            ui->stageTree->setCurrentItem(item);
+
+            // 2. 更新数据模型
+            m_processStages.move(index, index - 1);
+        }
+    } else {
+        // --- 移动步骤 ---
+        QTreeWidgetItem *parentItem = currentItem->parent();
+        int index = parentItem->indexOfChild(currentItem);
+        if (index > 0) {
+            // 1. 更新UI
+            QTreeWidgetItem *item = parentItem->takeChild(index);
+            parentItem->insertChild(index - 1, item);
+            ui->stageTree->setCurrentItem(item);
+
+            // 2. 更新数据模型
+            QUuid stageId(parentItem->data(0, Qt::UserRole).toString());
+            for (auto &stage : m_processStages) {
+                if (stage.id == stageId) {
+                    stage.steps.move(index, index - 1);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+// “下移”按钮的槽函数
+void MainWindow::on_downButton_clicked()
+{
+    QTreeWidgetItem *currentItem = ui->stageTree->currentItem();
+    if (!currentItem) {
+        QMessageBox::warning(this, "提示", "请选择一个要移动的项。");
+        return;
+    }
+
+    if (currentItem->parent() == nullptr) {
+        // --- 移动阶段 ---
+        int index = ui->stageTree->indexOfTopLevelItem(currentItem);
+        if (index < ui->stageTree->topLevelItemCount() - 1) {
+            // 1. 更新UI
+            QTreeWidgetItem *item = ui->stageTree->takeTopLevelItem(index);
+            ui->stageTree->insertTopLevelItem(index + 1, item);
+            ui->stageTree->setCurrentItem(item);
+
+            // 2. 更新数据模型
+            m_processStages.move(index, index + 1);
+        }
+    } else {
+        // --- 移动步骤 ---
+        QTreeWidgetItem *parentItem = currentItem->parent();
+        int index = parentItem->indexOfChild(currentItem);
+        if (index < parentItem->childCount() - 1) {
+            // 1. 更新UI
+            QTreeWidgetItem *item = parentItem->takeChild(index);
+            parentItem->insertChild(index + 1, item);
+            ui->stageTree->setCurrentItem(item);
+
+            // 2. 更新数据模型
+            QUuid stageId(parentItem->data(0, Qt::UserRole).toString());
+            for (auto &stage : m_processStages) {
+                if (stage.id == stageId) {
+                    stage.steps.move(index, index + 1);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 // 根据 m_processStages 的数据刷新 stageTree
 void MainWindow::populateStageTree()
 {

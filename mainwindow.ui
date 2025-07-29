@@ -136,6 +136,12 @@
      </item>
      <item>
       <widget class="QTreeWidget" name="stageTree">
+       <property name="dragEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::NoDragDrop</enum>
+       </property>
        <column>
         <property name="text">
          <string>阶段</string>

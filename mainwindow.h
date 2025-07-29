@@ -68,5 +68,7 @@ private slots:
     void on_submitButton_clicked();
     void on_resetButton_clicked();
     void on_paramConfig_currentChanged(int index);
+    void on_upButton_clicked();
+    void on_downButton_clicked();
 };
 #endif // MAINWINDOW_H
