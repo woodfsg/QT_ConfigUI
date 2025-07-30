@@ -275,19 +275,6 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="filePathLabel">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>310</y>
-      <width>291</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

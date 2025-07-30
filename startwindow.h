@@ -22,7 +22,7 @@ private:
     MainWindow *m_mainWindow;
     QStringList m_categories; // 存储类别列表
     static const int FILES_PER_PAGE = 10; // 每页显示的文件数
-    QString m_programFilesPath = "C:/Users/li/Documents/ConfigUI/programFiles";
+    QString m_programFilesPath;
     QStringList m_sortedFiles; // 存储排序后的文件列表
     int m_currentPage = 1; // 当前页码
 

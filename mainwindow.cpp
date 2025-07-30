@@ -11,7 +11,6 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent)
     ui->setupUi(this);
 
     m_filePath = filePath; // 存储文件路径
-    ui->filePathLabel->setText(m_filePath);
     
     initProgramMap(); // 初始化程序类别和子类别的映射关系
     initParamMap();   // 初始化参数映射表
@@ -440,7 +439,7 @@ void MainWindow::saveStagesToFile()
     file.write(doc.toJson(QJsonDocument::Indented));
     file.close();
 
-    QMessageBox::information(this, "成功", "数据已成功保存到 " + m_filePath);
+    QMessageBox::information(this, "成功", "数据已成功保存。");
 }
 
 // 从 JSON 文件加载数据到 m_processStages

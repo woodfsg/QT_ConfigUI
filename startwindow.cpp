@@ -23,6 +23,9 @@ StartWindow::StartWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // 初始化程序文件路径
+    m_programFilesPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/ConfigUI/programFiles";
+
     init_programTable();
     loadCategories();
     updateComboBox();
@@ -293,11 +296,21 @@ void StartWindow::on_addProgramPushButton_clicked()
         
         // 创建新文件
         QString fileName = createFileName(category, name, description);
+
+        // 检查文件名是否包含非法字符
+        QRegExp illegalChars("[\\\\/:*?\"<>|]");
+        if (fileName.contains(illegalChars)) {
+            QMessageBox::warning(this, "创建失败", "程序类别、名称或描述中含有非法字符 (\\ / : * ? \" < > |)，请修改程序类别、名称或描述。");
+            return;
+        }
+
         QFile file(m_programFilesPath + "/" + fileName);
         if (file.open(QIODevice::WriteOnly)) {
             file.close();
             // 更新显示
             loadProgramFiles();
+        } else {
+            QMessageBox::critical(this, "创建失败", "无法创建文件。");
         }
     }
 }
