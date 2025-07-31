@@ -177,14 +177,14 @@
         <number>0</number>
        </property>
        <widget class="QWidget" name="empty"/>
-       <widget class="QWidget" name="inputPage">
+       <widget class="QWidget" name="operatorInfoPage">
         <widget class="QWidget" name="formLayoutWidget">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>40</y>
-           <width>160</width>
-           <height>150</height>
+           <x>0</x>
+           <y>20</y>
+           <width>281</width>
+           <height>221</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
@@ -195,6 +195,13 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="operatorInfoStepNameLineEdit">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
@@ -202,24 +209,37 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="inputStepNameLineEdit">
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="operatorInfoOperatorNameLineEdit">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="inputOperatorNameLineEdit">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_10">
             <property name="text">
-             <string/>
+             <string>请填写说明</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QTextEdit" name="operatorInfoDescriptionTextEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Stage</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="MultiSelectComboBox" name="operatorInfoStageComboBox"/>
           </item>
          </layout>
         </widget>
        </widget>
-       <widget class="QWidget" name="promptPage">
+       <widget class="QWidget" name="infoPromptPage">
         <widget class="QWidget" name="formLayoutWidget_2">
          <property name="geometry">
           <rect>
@@ -245,10 +265,10 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="promptStepNameLineEdit"/>
+           <widget class="QLineEdit" name="infoPromptStepNameLineEdit"/>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="promptMessageLineEdit"/>
+           <widget class="QLineEdit" name="infoPromptMessageLineEdit"/>
           </item>
          </layout>
         </widget>
@@ -300,6 +320,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MultiSelectComboBox</class>
+   <extends>QComboBox</extends>
+   <header>multiselectcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

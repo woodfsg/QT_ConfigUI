@@ -15,6 +15,7 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent)
     initProgramMap(); // 初始化程序类别和子类别的映射关系
     initParamMap();   // 初始化参数映射表
     initFormFieldMaps(); // 初始化表单字段映射
+    initStageComboBox();
 
     m_currentlyEditingItem = nullptr;
     m_lastParamConfigIndex = ui->paramConfig->currentIndex();
@@ -36,30 +37,55 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
+void MainWindow::initStageComboBox()
+{
+    // 获取所有子组件
+    QList<QWidget*> allWidgets = this->findChildren<QWidget*>();
+    
+    // 遍历所有组件，查找包含"stageComboBox"的组件
+    for (QWidget* widget : allWidgets) {
+        if (widget->objectName().contains("StageComboBox")) {
+            // 尝试将组件转换为MultiSelectComboBox类型
+            MultiSelectComboBox* comboBox = qobject_cast<MultiSelectComboBox*>(widget);
+            if (comboBox) {
+                // 执行初始化操作
+                comboBox->addItems(QStringList() << "Stage 1" << "Stage 2" << "Stage 3");
+                comboBox->SetSearchBarHidden(true);
+            }
+        }
+    }
+}
+
 void MainWindow::initProgramMap()
 {
     // 初始化下拉框映射
     m_programMap["请选择程序类别"] = QStringList() << "请选择子类别";
-    m_programMap["信息输入"] = QStringList() << "苹果";
-    m_programMap["信息提示"] = QStringList() << "胡萝卜";
+    m_programMap["信息输入"] = QStringList() << "操作者信息";
+    m_programMap["信息提示"] = QStringList() << "信息提示";
 }
 
 void MainWindow::initParamMap()
 {
-    m_paramMap.insert("苹果", FormType::FORM_INPUT);
-    m_paramMap.insert("胡萝卜", FormType::FORM_PROMPT);
     m_paramMap.insert("请选择子类别", FormType::FORM_DEFAULT);
+
+    // 信息输入类别
+    m_paramMap.insert("操作者信息", FormType::FORM_OPERATOR_INFO);
+
+    // 信息提示类别
+    m_paramMap.insert("信息提示", FormType::FORM_INFO_PROMPT);
 }
 
 void MainWindow::initFormFieldMaps()
 {
     // 初始化信息输入表单的字段映射
-    m_formFieldMaps[FormType::FORM_INPUT]["stepName"] = "inputStepNameLineEdit";
-    m_formFieldMaps[FormType::FORM_INPUT]["operatorName"] = "inputOperatorNameLineEdit";
+    m_formFieldMaps[FormType::FORM_OPERATOR_INFO]["stepName"] = "operatorInfoStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_OPERATOR_INFO]["operatorName"] = "operatorInfoOperatorNameLineEdit";
+    m_formFieldMaps[FormType::FORM_OPERATOR_INFO]["description"] = "operatorInfoDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_OPERATOR_INFO]["stage"] = "operatorInfoStageComboBox";
 
     // 初始化信息提示表单的字段映射
-    m_formFieldMaps[FormType::FORM_PROMPT]["stepName"] = "promptStepNameLineEdit";
-    m_formFieldMaps[FormType::FORM_PROMPT]["message"] = "promptMessageLineEdit";
+    m_formFieldMaps[FormType::FORM_INFO_PROMPT]["stepName"] = "infoPromptStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_INFO_PROMPT]["message"] = "infoPromptMessageLineEdit";
 }
 
 QJsonObject MainWindow::saveFormData(int formIndex)
@@ -82,10 +108,15 @@ QJsonObject MainWindow::saveFormData(int formIndex)
             // 根据控件类型获取值并存入 JSON
             if (QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget)) {
                 formData[jsonKey] = lineEdit->text();
+            } else if(MultiSelectComboBox* multiComboBox = qobject_cast<MultiSelectComboBox*>(widget)) {
+                QStringList selectedItems = multiComboBox->currentText(); // 多选下拉框的选中项
+                formData[jsonKey] = selectedItems.join(","); 
             } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
                  formData[jsonKey] = comboBox->currentText(); // 或者保存 currentIndex()
+            } else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
+                formData[jsonKey] = textEdit->toPlainText();
             }
-            // TODO: 添加其他控件类型的处理，如 QCheckBox, QSpinBox 等
+            
         }
     }
     formData["programCategory"] = ui->programCategory->currentText();
@@ -113,11 +144,18 @@ void MainWindow::loadFormData(int formIndex, const QJsonObject& formData)
                 // 根据控件类型设置值
                  if (QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget)) {
                     lineEdit->setText(formData[jsonKey].toString());
+                } else if(MultiSelectComboBox* multiComboBox = qobject_cast<MultiSelectComboBox*>(widget))
+                {
+                    // 设置多选下拉框的选中项
+                    QStringList selectedItems = formData[jsonKey].toString().split(",");
+                    multiComboBox->setCurrentText(selectedItems);
                 } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
                     // 根据文本设置当前项，或者根据索引设置
                     comboBox->setCurrentText(formData[jsonKey].toString());
                 }
-                // TODO: 添加其他控件类型的处理
+                else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
+                    textEdit->setPlainText(formData[jsonKey].toString());
+                }
             }
         }
     }
@@ -141,11 +179,15 @@ void MainWindow::clearFormData(int formIndex)
             // 根据控件类型清空值
             if (QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget)) {
                 lineEdit->clear();
+            } else if(MultiSelectComboBox* multiComboBox = qobject_cast<MultiSelectComboBox*>(widget)) {
+                multiComboBox->TextClear(); // 清空多选下拉框的选中项
             } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
                 // 重置 ComboBox，例如设置为第一个项
                 comboBox->setCurrentIndex(0);
+            } else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
+                textEdit->clear();
             }
-            // TODO: 添加其他控件类型的处理
+            
         }
     }
 }
@@ -398,17 +440,8 @@ void MainWindow::on_resetButton_clicked()
 // 新增槽函数：切换页面时清空上一个页面的编辑框
 void MainWindow::on_paramConfig_currentChanged(int index)
 {
-    switch (m_lastParamConfigIndex)
-    {
-        case FormType::FORM_INPUT:
-            ui->inputStepNameLineEdit->clear();
-            ui->inputOperatorNameLineEdit->clear();
-            break;
-        case FormType::FORM_PROMPT:
-            ui->promptStepNameLineEdit->clear();
-            ui->promptMessageLineEdit->clear();
-            break;
-    }
+    // 清空上一个页面的编辑框
+    clearFormData(m_lastParamConfigIndex);
     // 更新记录的上一个页面索引
     m_lastParamConfigIndex = index;
     // 清空当前正在编辑的步骤项

@@ -18,12 +18,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    multiselectcombobox.cpp \
     programdialog.cpp \
     stagedialog.cpp \
     startwindow.cpp
 
 HEADERS += \
     mainwindow.h \
+    multiselectcombobox.h \
     processstage.h \
     processstep.h \
     programdialog.h \

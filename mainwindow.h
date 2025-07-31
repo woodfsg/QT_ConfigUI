@@ -22,8 +22,8 @@ public:
     // 添加枚举定义
     enum FormType {
         FORM_DEFAULT = 0,
-        FORM_INPUT = 1,
-        FORM_PROMPT = 2,
+        FORM_OPERATOR_INFO = 1,
+        FORM_INFO_PROMPT = 2,
     };
 
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
@@ -52,6 +52,7 @@ private:
     void initProgramMap(); // 初始化程序类别和子类别的映射关系
     void initParamMap();
     void initFormFieldMaps();
+    void initStageComboBox(); 
 
     // 新增的用于文件操作和UI更新的函数
     void saveStagesToFile();
