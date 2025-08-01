@@ -60,8 +60,9 @@ void MainWindow::initProgramMap()
 {
     // 初始化下拉框映射
     m_programMap["请选择程序类别"] = QStringList() << "请选择子类别";
-    m_programMap["信息输入"] = QStringList() << "操作者信息";
+    m_programMap["信息输入"] = QStringList() << "操作者信息" << "管路信息";
     m_programMap["信息提示"] = QStringList() << "信息提示";
+    m_programMap["磁铁动作"] = QStringList() << "磁铁动作";
 }
 
 void MainWindow::initParamMap()
@@ -70,9 +71,13 @@ void MainWindow::initParamMap()
 
     // 信息输入类别
     m_paramMap.insert("操作者信息", FormType::FORM_OPERATOR_INFO);
+    m_paramMap.insert("管路信息", FormType::FORM_PIPELINE_INFO);
 
     // 信息提示类别
     m_paramMap.insert("信息提示", FormType::FORM_INFO_PROMPT);
+
+    // 磁铁动作类别
+    m_paramMap.insert("磁铁动作", FormType::FORM_MAGNET_ACTION);
 }
 
 void MainWindow::initFormFieldMaps()
@@ -83,9 +88,21 @@ void MainWindow::initFormFieldMaps()
     m_formFieldMaps[FormType::FORM_OPERATOR_INFO]["description"] = "operatorInfoDescriptionTextEdit";
     m_formFieldMaps[FormType::FORM_OPERATOR_INFO]["stage"] = "operatorInfoStageComboBox";
 
+    // 初始化管路信息表单的字段映射
+    m_formFieldMaps[FormType::FORM_PIPELINE_INFO]["stepName"] = "pipelineInfoStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_PIPELINE_INFO]["description"] = "pipelineInfoDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_PIPELINE_INFO]["stage"] = "pipelineInfoStageComboBox";
+
     // 初始化信息提示表单的字段映射
     m_formFieldMaps[FormType::FORM_INFO_PROMPT]["stepName"] = "infoPromptStepNameLineEdit";
     m_formFieldMaps[FormType::FORM_INFO_PROMPT]["message"] = "infoPromptMessageLineEdit";
+
+    // 初始化磁铁动作表单的字段映射
+    m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["stepName"] = "magnetActionStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["magnetAction"] = "magnetActionComboBox";
+    m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["description"] = "magnetActionDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["stage"] = "magnetActionStageComboBox";
+    m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["automation"] = "magnetActionAutomationComboBox";
 }
 
 QJsonObject MainWindow::saveFormData(int formIndex)
@@ -428,6 +445,8 @@ void MainWindow::on_submitButton_clicked()
         // 弹出提示
         QMessageBox::information(this, "提示", "步骤已添加！");
     }
+    // 清空当前表单数据
+    clearFormData(formIndex);
 }
 
 void MainWindow::on_resetButton_clicked()

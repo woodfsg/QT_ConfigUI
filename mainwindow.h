@@ -24,6 +24,8 @@ public:
         FORM_DEFAULT = 0,
         FORM_OPERATOR_INFO = 1,
         FORM_INFO_PROMPT = 2,
+        FORM_PIPELINE_INFO = 3,
+        FORM_MAGNET_ACTION = 4,
     };
 
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
