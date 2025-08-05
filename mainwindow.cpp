@@ -277,19 +277,8 @@ void MainWindow::on_deleteItemButton_clicked()
     if (currentItem->parent() == nullptr) {
         // 如果当前选中的是顶层节点
         int index = ui->stageTree->indexOfTopLevelItem(currentItem);
-        if (index != -1) {
-            // 删除ProcessStage数据模型中的阶段
-            QUuid stageId(currentItem->data(0, Qt::UserRole).toString());
-            for (auto it = m_processStages.begin(); it != m_processStages.end(); ++it) {
-                if (it->id == stageId) {
-                    m_processStages.erase(it); // 从数据模型中删除阶段
-                    break;
-                }
-            }
-            // 从树形视图中删除当前顶层节点
-            QTreeWidgetItem* takenItem = ui->stageTree->takeTopLevelItem(index);
-            delete takenItem; // 同样会级联删除所有子节点
-        }
+        m_processStages.removeAt(index);
+        ui->stageTree->takeTopLevelItem(index);
     } else {
         // 删除ProcessStep数据模型中的步骤
         QUuid stepId(currentItem->data(0, Qt::UserRole).toString());
@@ -307,9 +296,12 @@ void MainWindow::on_deleteItemButton_clicked()
         }
         // 从树形视图中删除当前节点
         currentItem->parent()->removeChild(currentItem);
-        delete currentItem;
     }
-    return;
+    if(m_currentlyEditingItem == currentItem || (m_currentlyEditingItem && m_currentlyEditingItem->parent() == currentItem)) {
+        m_currentlyEditingItem = nullptr; // 清空当前正在编辑的步骤项
+        clearFormData(ui->paramConfig->currentIndex()); // 清空当前表单数据
+    }
+    delete currentItem; 
 }
 
 void MainWindow::on_stageTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
