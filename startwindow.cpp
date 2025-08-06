@@ -477,3 +477,47 @@ void StartWindow::on_exportPushButton_clicked()
                              QString("成功导出 %1 个文件。\n失败 %2 个。")
                              .arg(successCount).arg(failureCount));
 }
+
+// 导入按钮点击事件处理
+void StartWindow::on_importPushButton_clicked()
+{
+    // 1. 弹出文件对话框让用户选择一个或多个文件
+    QStringList filePaths = QFileDialog::getOpenFileNames(
+        this,
+        "选择要导入的文件",
+        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), // 默认打开文档目录
+        "所有文件 (*.*)"
+    );
+
+    if (filePaths.isEmpty()) {
+        return; // 用户取消了选择
+    }
+
+    int successCount = 0;
+    int failureCount = 0;
+
+    // 2. 遍历选中的文件并复制到目标目录
+    for (const QString &sourceFilePath : filePaths) {
+        QFileInfo fileInfo(sourceFilePath);
+        QString fileName = fileInfo.fileName();
+        QString destFilePath = m_programFilesPath + "/" + fileName;
+
+        // 执行复制操作
+        if (QFile::copy(sourceFilePath, destFilePath)) {
+            successCount++;
+        } else {
+            failureCount++;
+            qDebug() << "无法复制文件：" << sourceFilePath << " 到 " << destFilePath;
+        }
+    }
+
+    // 3. 刷新文件列表以显示新导入的文件
+    if (successCount > 0) {
+        loadProgramFiles();
+    }
+
+    // 4. 显示结果
+    QMessageBox::information(this, "导入完成",
+                             QString("成功导入 %1 个文件。\n失败 %2 个。")
+                             .arg(successCount).arg(failureCount));
+}

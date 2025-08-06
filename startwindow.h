@@ -46,6 +46,7 @@ private slots:
     void handleMainWindowClosed();
     void on_pageTree_itemClicked(QTreeWidgetItem *item, int column); // 处理页面点击
     void on_exportPushButton_clicked();
+    void on_importPushButton_clicked(); // 处理导入按钮点击
 
 private:   
     QString createFileName(const QString& category, const QString& name, 
