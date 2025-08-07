@@ -391,7 +391,7 @@ void StartWindow::on_editProgramPushButton_clicked()
             }
             
             // 创建新文件名
-            QString newFileName = createFileName(newCategory, newName, newDescription);
+            QString newFileName = QString("%1_%2_%3_%4.json").arg(newCategory).arg(newName).arg(time).arg(newDescription);
             QString oldFilePath = m_programFilesPath + "/" + m_sortedFiles[fileIndex];
             QString newFilePath = m_programFilesPath + "/" + newFileName;
             
@@ -485,7 +485,7 @@ void StartWindow::on_importPushButton_clicked()
     QStringList filePaths = QFileDialog::getOpenFileNames(
         this,
         "选择要导入的文件",
-        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), // 默认打开文档目录
+        QStandardPaths::writableLocation(QStandardPaths::DownloadLocation), // 默认打开文档目录
         "所有文件 (*.*)"
     );
 

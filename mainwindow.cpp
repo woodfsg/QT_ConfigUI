@@ -616,6 +616,6 @@ void MainWindow::populateStageTree()
             stepItem->setText(0, step.stepName);
             stepItem->setData(0, Qt::UserRole, step.id.toString());
         }
-        stageItem->setExpanded(true);
+        stageItem->setExpanded(false);
     }
 }
