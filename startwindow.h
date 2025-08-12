@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStringList>
+#include <QByteArray>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -25,6 +26,7 @@ private:
     QString m_programFilesPath;
     QStringList m_sortedFiles; // 存储排序后的文件列表
     int m_currentPage = 1; // 当前页码
+    QByteArray m_encryptionKey = "my-secret-key"; // 一个简单的异或加密密钥
 
     void init_programTable();
     void loadCategories(); // 从配置文件加载类别
@@ -51,6 +53,8 @@ private slots:
 private:   
     QString createFileName(const QString& category, const QString& name, 
                          const QString& description); // 创建文件名
+    QByteArray encryptData(const QByteArray& data); // 加密数据
+    QByteArray decryptData(const QByteArray& data); // 解密数据
 };
 
 #endif // STARTWINDOW_H

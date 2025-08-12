@@ -256,7 +256,7 @@ void StartWindow::parseFileAttributes(const QString& fileName, QString& category
 {
     // 移除.json后缀
     QString baseName = fileName;
-    baseName.chop(5); // 移除".json"
+        baseName.chop(5); // 移除".json"
 
     // 分割文件名获取属性
     QStringList parts = baseName.split("_");
@@ -431,20 +431,27 @@ void StartWindow::on_exportPushButton_clicked()
         return;
     }
 
-    QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation); // 2. 获取下载文件夹路径
-
     // 2. 弹出文件对话框选择导出目录
+    QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     QString destDir = QFileDialog::getExistingDirectory(this, "选择导出目录",
-                                                       downloadPath, // 使用下载文件夹路径作为初始路径
-                                                       QFileDialog::ShowDirsOnly
-                                                       | QFileDialog::DontResolveSymlinks);
+                                                       downloadPath,
+                                                       QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (destDir.isEmpty()) {
         return; // 用户取消了选择
     }
 
-    // 3. 复制文件
-    // 使用 QSet 存储选中的行号，避免因选择多个单元格而重复处理同一行
+    // 3. 询问是否加密
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "加密确认", "是否要加密导出的文件？",
+                                  QMessageBox::Yes|QMessageBox::No);
+
+    if (!(reply == QMessageBox::Yes)) {
+        return; // 用户取消操作
+    }
+    bool encrypt = (reply == QMessageBox::Yes);
+
+    // 4. 复制且可能加密文件
     QSet<int> selectedRows;
     for (const QTableWidgetItem* item : selectedItems) {
         selectedRows.insert(item->row());
@@ -454,16 +461,32 @@ void StartWindow::on_exportPushButton_clicked()
     int failureCount = 0;
 
     for (int row : selectedRows) {
-        // 计算文件在 m_sortedFiles 列表中的实际索引
         int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
         
         if (fileIndex < m_sortedFiles.size()) {
             QString sourceFileName = m_sortedFiles[fileIndex];
             QString sourceFilePath = m_programFilesPath + "/" + sourceFileName;
-            QString destFilePath = destDir + "/" + sourceFileName;
+            
+            QString destFileName = sourceFileName;
+            if (encrypt) {
+                // 如果是普通json文件，则修改后缀为加密后缀
+                if(destFileName.endsWith(".json")) {
+                    destFileName.replace(".json", ".ejson");
+                }
+            }
+            QString destFilePath = destDir + "/" + destFileName;
 
-            // 执行复制操作
-            if (QFile::copy(sourceFilePath, destFilePath)) {
+            QFile sourceFile(sourceFilePath);
+            QFile destFile(destFilePath);
+
+            if (sourceFile.open(QIODevice::ReadOnly) && destFile.open(QIODevice::WriteOnly)) {
+                QByteArray data = sourceFile.readAll();
+                if (encrypt) {
+                    data = encryptData(data);
+                }
+                destFile.write(data);
+                sourceFile.close();
+                destFile.close();
                 successCount++;
             } else {
                 failureCount++;
@@ -472,7 +495,7 @@ void StartWindow::on_exportPushButton_clicked()
         }
     }
 
-    // 4. 显示结果
+    // 5. 显示结果
     QMessageBox::information(this, "导出完成", 
                              QString("成功导出 %1 个文件。\n失败 %2 个。")
                              .arg(successCount).arg(failureCount));
@@ -485,8 +508,8 @@ void StartWindow::on_importPushButton_clicked()
     QStringList filePaths = QFileDialog::getOpenFileNames(
         this,
         "选择要导入的文件",
-        QStandardPaths::writableLocation(QStandardPaths::DownloadLocation), // 默认打开文档目录
-        "所有文件 (*.*)"
+        QStandardPaths::writableLocation(QStandardPaths::DownloadLocation),
+        "程序文件 (*.json *.ejson)"
     );
 
     if (filePaths.isEmpty()) {
@@ -502,12 +525,32 @@ void StartWindow::on_importPushButton_clicked()
         QString fileName = fileInfo.fileName();
         QString destFilePath = m_programFilesPath + "/" + fileName;
 
-        // 执行复制操作
-        if (QFile::copy(sourceFilePath, destFilePath)) {
-            successCount++;
+        QFile sourceFile(sourceFilePath);
+        QFile destFile(destFilePath);
+
+        if (sourceFile.open(QIODevice::ReadOnly)) {
+            QByteArray data = sourceFile.readAll();
+            sourceFile.close();
+
+            // 如果是加密文件，则解密
+            if (fileName.endsWith(".ejson")) {
+                data = decryptData(data);
+                // 将目标文件后缀名改回.json
+                destFilePath.replace(".ejson", ".json");
+            }
+            
+            QFile finalDestFile(destFilePath);
+            if (finalDestFile.open(QIODevice::WriteOnly)) {
+                finalDestFile.write(data);
+                finalDestFile.close();
+                successCount++;
+            } else {
+                failureCount++;
+                qDebug() << "无法写入目标文件：" << destFilePath;
+            }
         } else {
             failureCount++;
-            qDebug() << "无法复制文件：" << sourceFilePath << " 到 " << destFilePath;
+            qDebug() << "无法读取源文件：" << sourceFilePath;
         }
     }
 
@@ -520,4 +563,21 @@ void StartWindow::on_importPushButton_clicked()
     QMessageBox::information(this, "导入完成",
                              QString("成功导入 %1 个文件。\n失败 %2 个。")
                              .arg(successCount).arg(failureCount));
+}
+
+// 加密数据
+QByteArray StartWindow::encryptData(const QByteArray& data)
+{
+    QByteArray encryptedData = data;
+    for (int i = 0; i < encryptedData.size(); ++i) {
+        encryptedData[i] = encryptedData[i] ^ m_encryptionKey[i % m_encryptionKey.size()];
+    }
+    return encryptedData;
+}
+
+// 解密数据
+QByteArray StartWindow::decryptData(const QByteArray& data)
+{
+    // 解密和加密是同一个操作
+    return encryptData(data);
 }
