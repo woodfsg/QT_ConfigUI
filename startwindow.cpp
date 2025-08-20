@@ -79,7 +79,7 @@ void StartWindow::on_editProgramContentPushButton_clicked()
     int fileIndex = (m_currentPage - 1) * FILES_PER_PAGE + row;
     QString filePath = m_programFilesPath + "/" + m_sortedFiles[fileIndex];
 
-    // 如果 m_mainWindow 还存在 (虽然不太可能，但这是好的编程习惯)
+    // 如果 m_mainWindow 还存在
     if (m_mainWindow) {
         m_mainWindow->deleteLater();
     }

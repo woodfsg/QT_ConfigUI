@@ -28,7 +28,13 @@ public:
         FORM_MAGNET_ACTION = 4,
         FORM_BY_VOLUME = 5,
         FORM_BY_BUBBLE_SENSOR = 6,
-        FORM_BY_PRESSURE = 7
+        FORM_BY_PRESSURE = 7,
+        FORM_CENTRIFUGAL_SINGLE = 8,
+        FORM_CENTRIFUGAL_CYCLE = 9,
+        FORM_CENTRIFUGAL_STOP = 10,
+        FORM_CYCLE_STEP_SINGLE = 11,
+        FORM_CYCLE_STEP_CYCLE = 12,
+        FORM_CYCLE_STEP_STOP = 13
     };
 
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);

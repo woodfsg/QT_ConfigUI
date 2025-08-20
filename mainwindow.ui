@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1122</width>
-    <height>529</height>
+    <height>605</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,3,3">
+   <layout class="QHBoxLayout" name="horizontalLayout_13">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
       <item>
@@ -51,6 +51,16 @@
           <item>
            <property name="text">
             <string>液体转移</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>离心运转</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>循环步骤</string>
            </property>
           </item>
          </widget>
@@ -100,7 +110,7 @@
       <item>
        <widget class="QStackedWidget" name="paramConfig">
         <property name="currentIndex">
-         <number>7</number>
+         <number>9</number>
         </property>
         <widget class="QWidget" name="empty"/>
         <widget class="QWidget" name="operatorInfoPage">
@@ -682,6 +692,410 @@
             </item>
             <item row="3" column="1">
              <widget class="QLineEdit" name="byPressureNumberLineEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="centrifugalSinglePage">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <layout class="QFormLayout" name="formLayout_10">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_45">
+              <property name="text">
+               <string>步骤名称</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_46">
+              <property name="text">
+               <string>方向设置</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_47">
+              <property name="text">
+               <string>加速时间(s)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_48">
+              <property name="text">
+               <string>离心转速</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_49">
+              <property name="text">
+               <string>单位</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_50">
+              <property name="text">
+               <string>持续运转</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_51">
+              <property name="text">
+               <string>运转时间</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="label_52">
+              <property name="text">
+               <string>时间单位</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="label_53">
+              <property name="text">
+               <string>请填写说明</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="label_54">
+              <property name="text">
+               <string>是否自动运行</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="label_55">
+              <property name="text">
+               <string>Stage</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="centrifugalSingleStepNameLineEdit"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="centrifugalSingleDirectionSettingComboBox">
+              <item>
+               <property name="text">
+                <string>顺时针</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>逆时针</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="centrifugalSingleAccelerationTimeSpinBox"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="centrifugalSingleCentrifugalSpeedSpinBox"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="centrifugalSingleUnitComboBox">
+              <item>
+               <property name="text">
+                <string>rpm</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>g</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="centrifugalSingleContinuousRunningComboBox">
+              <item>
+               <property name="text">
+                <string>是</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>否</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QSpinBox" name="centrifugalSingleRunningTimeSpinBox"/>
+            </item>
+            <item row="7" column="1">
+             <widget class="QComboBox" name="centrifugalSingleTimeUnitComboBox">
+              <item>
+               <property name="text">
+                <string>Hour</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Min</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Sec</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QTextEdit" name="centrifugalSingleDescriptionTextEdit"/>
+            </item>
+            <item row="9" column="1">
+             <widget class="QComboBox" name="centrifugalSingleAutomationComboBox">
+              <item>
+               <property name="text">
+                <string>自动运行</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>手动运行</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="MultiSelectComboBox" name="centrifugalSingleStageComboBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="centrifugalCyclePage">
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <layout class="QFormLayout" name="formLayout_11">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_56">
+              <property name="text">
+               <string>步骤名称</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_57">
+              <property name="text">
+               <string>方向设置</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_58">
+              <property name="text">
+               <string>加速时间(s)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_59">
+              <property name="text">
+               <string>离心转速</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_60">
+              <property name="text">
+               <string>单位</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_61">
+              <property name="text">
+               <string>单次时间(s)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_62">
+              <property name="text">
+               <string>间隔时间(s)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="label_63">
+              <property name="text">
+               <string>总时间(s)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="label_64">
+              <property name="text">
+               <string>请填写说明</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="label_65">
+              <property name="text">
+               <string>是否自动运行</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="label_66">
+              <property name="text">
+               <string>Stage</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="centrifugalCycleStepNameLineEdit"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="centrifugalCycleDirectionSettingComboBox">
+              <item>
+               <property name="text">
+                <string>顺时针</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>逆时针</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="centrifugalCycleAccelerationTimeSpinBox"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="centrifugalCycleCentrifugalSpeedSpinBox"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="centrifugalCycleUnitComboBox">
+              <item>
+               <property name="text">
+                <string>rpm</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>g</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QSpinBox" name="centrifugalCycleInternalTimeSpinBox"/>
+            </item>
+            <item row="8" column="1">
+             <widget class="QTextEdit" name="centrifugalCycleDescriptionTextEdit"/>
+            </item>
+            <item row="9" column="1">
+             <widget class="QComboBox" name="centrifugalCycleAutomationComboBox">
+              <item>
+               <property name="text">
+                <string>自动运行</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>手动运行</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="MultiSelectComboBox" name="centrifugalCycleStageComboBox"/>
+            </item>
+            <item row="5" column="1">
+             <widget class="QSpinBox" name="centrifugalCycleSingleTimeSpinBox"/>
+            </item>
+            <item row="7" column="1">
+             <widget class="QSpinBox" name="centrifugalCycleTotalTimeSpinBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="centrifugalStopPage">
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <layout class="QFormLayout" name="formLayout_9">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_67">
+              <property name="text">
+               <string>步骤名称</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_78">
+              <property name="text">
+               <string>停止运转</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_75">
+              <property name="text">
+               <string>请填写说明</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_76">
+              <property name="text">
+               <string>是否自动运行</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_77">
+              <property name="text">
+               <string>Stage</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="centrifugalStopStepNameLineEdit"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QTextEdit" name="centrifugalStopDescriptionTextEdit"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="centrifugalStopAutomationComboBox">
+              <item>
+               <property name="text">
+                <string>自动运行</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>手动运行</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="MultiSelectComboBox" name="centrifugalStopStageComboBox"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="centrifugalStopRunningComboBox">
+              <item>
+               <property name="text">
+                <string>停止</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>

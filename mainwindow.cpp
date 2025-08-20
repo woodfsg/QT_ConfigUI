@@ -83,6 +83,8 @@ void MainWindow::initProgramMap()
     m_programMap["信息提示"] = QStringList() << "信息提示";
     m_programMap["磁铁动作"] = QStringList() << "磁铁动作";
     m_programMap["液体转移"] = QStringList() << "按体积" << "按气泡感受器" << "按压力";
+    m_programMap["离心运转"] = QStringList() << "单次运转" << "循环运转" << "停止运转";
+    m_programMap["循环步骤"] = QStringList() << "单次运转 " << "循环运转 " << "停止运转 ";
 }
 
 void MainWindow::initParamMap()
@@ -103,6 +105,17 @@ void MainWindow::initParamMap()
     m_paramMap.insert("按体积", FormType::FORM_BY_VOLUME);
     m_paramMap.insert("按气泡感受器", FormType::FORM_BY_BUBBLE_SENSOR);
     m_paramMap.insert("按压力", FormType::FORM_BY_PRESSURE);
+
+    // 离心运转类别
+    m_paramMap.insert("单次运转", FormType::FORM_CENTRIFUGAL_SINGLE);
+    m_paramMap.insert("循环运转", FormType::FORM_CENTRIFUGAL_CYCLE);
+    m_paramMap.insert("停止运转", FormType::FORM_CENTRIFUGAL_STOP);
+
+    // 循环步骤类别
+    m_paramMap.insert("单次运转 ", FormType::FORM_CYCLE_STEP_SINGLE);
+    m_paramMap.insert("循环运转 ", FormType::FORM_CYCLE_STEP_CYCLE);
+    m_paramMap.insert("停止运转 ", FormType::FORM_CYCLE_STEP_STOP);
+
 }
 
 void MainWindow::initFormFieldMaps()
@@ -159,6 +172,39 @@ void MainWindow::initFormFieldMaps()
     m_formFieldMaps[FormType::FORM_BY_PRESSURE]["directionSetting"] = "byPressureDirectionSettingComboBox";
     m_formFieldMaps[FormType::FORM_BY_PRESSURE]["rotationalSpeed"] = "byPressureRotationalSpeedSpinBox";
     m_formFieldMaps[FormType::FORM_BY_PRESSURE]["pressure"] = "byPressureNumberLineEdit";
+
+    // 初始化离心运转单次运转表单的字段映射
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["stepName"] = "centrifugalSingleStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["centrifugalSpeed"] = "centrifugalSingleCentrifugalSpeedSpinBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["description"] = "centrifugalSingleDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["stage"] = "centrifugalSingleStageComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["automation"] = "centrifugalSingleAutomationComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["unit"] = "centrifugalSingleUnitComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["directionSetting"] = "centrifugalSingleDirectionSettingComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["accelerationTime"] = "centrifugalSingleAccelerationTimeSpinBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["continuousRunning"] = "centrifugalSingleContinuousRunningComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["continuousRunning"] = "centrifugalSingleContinuousRunningComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_SINGLE]["runningTime"] = "centrifugalSingleRunningTimeSpinBox";
+
+    // 初始化离心运转循环运转表单的字段映射
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["stepName"] = "centrifugalCycleStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["centrifugalSpeed"] = "centrifugalCycleCentrifugalSpeedSpinBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["description"] = "centrifugalCycleDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["stage"] = "centrifugalCycleStageComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["automation"] = "centrifugalCycleAutomationComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["unit"] = "centrifugalCycleUnitComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["accelerationTime"] = "centrifugalCycleAccelerationTimeSpinBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["directionSetting"] = "centrifugalCycleDirectionSettingComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["singleTime"] = "centrifugalCycleSingleTimeSpinBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["internalTime"] = "centrifugalCycleInternalTimeSpinBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_CYCLE]["totalTime"] = "centrifugalCycleTotalTimeSpinBox";
+
+    // 初始化离心运转停止运转表单的字段映射
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["stepName"] = "centrifugalStopStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["description"] = "centrifugalStopDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["stage"] = "centrifugalStopStageComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["automation"] = "centrifugalStopAutomationComboBox";
+    m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["stopRunning"] = "centrifugalStopRunningComboBox";
 }
 
 QJsonObject MainWindow::saveFormData(int formIndex)
@@ -188,6 +234,10 @@ QJsonObject MainWindow::saveFormData(int formIndex)
                  formData[jsonKey] = comboBox->currentText(); // 或者保存 currentIndex()
             } else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
                 formData[jsonKey] = textEdit->toPlainText();
+            } else if (QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget)) {
+                formData[jsonKey] = spinBox->value();
+            } else if (QDoubleSpinBox* doubleSpinBox = qobject_cast<QDoubleSpinBox*>(widget)) {
+                formData[jsonKey] = doubleSpinBox->value();
             }
             
         }
@@ -225,9 +275,12 @@ void MainWindow::loadFormData(int formIndex, const QJsonObject& formData)
                 } else if (QComboBox* comboBox = qobject_cast<QComboBox*>(widget)) {
                     // 根据文本设置当前项，或者根据索引设置
                     comboBox->setCurrentText(formData[jsonKey].toString());
-                }
-                else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
+                } else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
                     textEdit->setPlainText(formData[jsonKey].toString());
+                } else if (QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget)) {
+                    spinBox->setValue(formData[jsonKey].toInt());
+                } else if (QDoubleSpinBox* doubleSpinBox = qobject_cast<QDoubleSpinBox*>(widget)) {
+                    doubleSpinBox->setValue(formData[jsonKey].toDouble());
                 }
             }
         }
@@ -259,6 +312,10 @@ void MainWindow::clearFormData(int formIndex)
                 comboBox->setCurrentIndex(0);
             } else if (QTextEdit* textEdit = qobject_cast<QTextEdit*>(widget)) {
                 textEdit->clear();
+            } else if (QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget)) {
+                spinBox->setValue(0); // 重置为0
+            } else if (QDoubleSpinBox* doubleSpinBox = qobject_cast<QDoubleSpinBox*>(widget)) {
+                doubleSpinBox->setValue(0.0); // 重置为0.0
             }
             
         }
