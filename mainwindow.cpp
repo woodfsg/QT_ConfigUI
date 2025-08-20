@@ -53,6 +53,25 @@ void MainWindow::initStageComboBox()
                 comboBox->SetSearchBarHidden(true);
             }
         }
+        else if (widget->objectName().contains("SolenoidValveComboBox")) {
+            // 尝试将组件转换为MultiSelectComboBox类型
+            MultiSelectComboBox* comboBox = qobject_cast<MultiSelectComboBox*>(widget);
+            if (comboBox) {
+                // 执行初始化操作
+                QStringList solenoidValves;
+                for(int i = 1; i <= 24; ++i) {
+                    solenoidValves << QString::number(i) + "号电磁阀";
+                }
+                for(int i = 1; i <= 9; ++i) {
+                    solenoidValves << "F0" + QString::number(i) + "电磁阀";
+                }
+                for(int i = 10; i <= 15; ++i) {
+                    solenoidValves << "F" + QString::number(i) + "电磁阀";
+                }
+                comboBox->addItems(solenoidValves);
+                comboBox->SetSearchBarHidden(true);
+            }
+        }
     }
 }
 
@@ -63,6 +82,7 @@ void MainWindow::initProgramMap()
     m_programMap["信息输入"] = QStringList() << "操作者信息" << "管路信息";
     m_programMap["信息提示"] = QStringList() << "信息提示";
     m_programMap["磁铁动作"] = QStringList() << "磁铁动作";
+    m_programMap["液体转移"] = QStringList() << "按体积" << "按气泡感受器" << "按压力";
 }
 
 void MainWindow::initParamMap()
@@ -78,6 +98,11 @@ void MainWindow::initParamMap()
 
     // 磁铁动作类别
     m_paramMap.insert("磁铁动作", FormType::FORM_MAGNET_ACTION);
+
+    // 液体转移类别
+    m_paramMap.insert("按体积", FormType::FORM_BY_VOLUME);
+    m_paramMap.insert("按气泡感受器", FormType::FORM_BY_BUBBLE_SENSOR);
+    m_paramMap.insert("按压力", FormType::FORM_BY_PRESSURE);
 }
 
 void MainWindow::initFormFieldMaps()
@@ -103,6 +128,37 @@ void MainWindow::initFormFieldMaps()
     m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["description"] = "magnetActionDescriptionTextEdit";
     m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["stage"] = "magnetActionStageComboBox";
     m_formFieldMaps[FormType::FORM_MAGNET_ACTION]["automation"] = "magnetActionAutomationComboBox";
+
+    //初始化按体积表单的字段映射
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["stepName"] = "byVolumeStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["volume"] = "byVolumeSpinBox";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["description"] = "byVolumeDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["stage"] = "byVolumeStageComboBox";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["automation"] = "byVolumeAutomationComboBox";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["solenoidValve"] = "byVolumeSolenoidValveComboBox";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["directionSetting"] = "byVolumeDirectionSettingComboBox";
+    m_formFieldMaps[FormType::FORM_BY_VOLUME]["rotationalSpeed"] = "byVolumeRotationalSpeedSpinBox";
+
+    // 初始化按气泡感受器表单的字段映射
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["stepName"] = "byBubbleSensorStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["bubbleSensor"] = "byBubbleSensorComboBox";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["description"] = "byBubbleSensorDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["stage"] = "byBubbleSensorStageComboBox";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["automation"] = "byBubbleSensorAutomationComboBox";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["solenoidValve"] = "byBubbleSensorSolenoidValveComboBox";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["directionSetting"] = "byBubbleSensorDirectionSettingComboBox";
+    m_formFieldMaps[FormType::FORM_BY_BUBBLE_SENSOR]["rotationalSpeed"] = "byBubbleSensorRotationalSpeedSpinBox";
+
+    // 初始化按压力表单的字段映射
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["stepName"] = "byPressureStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["pressure"] = "byPressureComboBox";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["description"] = "byPressureDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["stage"] = "byPressureStageComboBox";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["automation"] = "byPressureAutomationComboBox";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["solenoidValve"] = "byPressureSolenoidValveComboBox";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["directionSetting"] = "byPressureDirectionSettingComboBox";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["rotationalSpeed"] = "byPressureRotationalSpeedSpinBox";
+    m_formFieldMaps[FormType::FORM_BY_PRESSURE]["pressure"] = "byPressureNumberLineEdit";
 }
 
 QJsonObject MainWindow::saveFormData(int formIndex)

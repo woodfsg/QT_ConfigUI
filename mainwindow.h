@@ -26,6 +26,9 @@ public:
         FORM_INFO_PROMPT = 2,
         FORM_PIPELINE_INFO = 3,
         FORM_MAGNET_ACTION = 4,
+        FORM_BY_VOLUME = 5,
+        FORM_BY_BUBBLE_SENSOR = 6,
+        FORM_BY_PRESSURE = 7
     };
 
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);

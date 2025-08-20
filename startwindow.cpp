@@ -42,6 +42,8 @@ StartWindow::~StartWindow()
 
 void StartWindow::init_programTable()
 {
+    // 选中一格即选中一行
+    ui->programTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     //设置表格的列宽
     ui->programTable->setColumnWidth(2, 150);
     QHeaderView *hor_header = ui->programTable->horizontalHeader();
@@ -446,9 +448,6 @@ void StartWindow::on_exportPushButton_clicked()
     reply = QMessageBox::question(this, "加密确认", "是否要加密导出的文件？",
                                   QMessageBox::Yes|QMessageBox::No);
 
-    if (!(reply == QMessageBox::Yes)) {
-        return; // 用户取消操作
-    }
     bool encrypt = (reply == QMessageBox::Yes);
 
     // 4. 复制且可能加密文件
