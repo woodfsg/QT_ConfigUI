@@ -110,7 +110,7 @@
       <item>
        <widget class="QStackedWidget" name="paramConfig">
         <property name="currentIndex">
-         <number>9</number>
+         <number>8</number>
         </property>
         <widget class="QWidget" name="empty"/>
         <widget class="QWidget" name="operatorInfoPage">
@@ -819,12 +819,12 @@
              <widget class="QComboBox" name="centrifugalSingleContinuousRunningComboBox">
               <item>
                <property name="text">
-                <string>是</string>
+                <string>否</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>否</string>
+                <string>是</string>
                </property>
               </item>
              </widget>

@@ -82,5 +82,6 @@ private slots:
     void on_paramConfig_currentChanged(int index);
     void on_upButton_clicked();
     void on_downButton_clicked();
+    void on_centrifugalSingleContinuousRunningComboBox_currentTextChanged(const QString &text);
 };
 #endif // MAINWINDOW_H

@@ -732,3 +732,20 @@ void MainWindow::populateStageTree()
         stageItem->setExpanded(false);
     }
 }
+
+// 处理离心单次运转持续运转选项改变的槽函数
+void MainWindow::on_centrifugalSingleContinuousRunningComboBox_currentTextChanged(const QString &text)
+{
+    QSpinBox* runningTimeSpinBox = ui->centrifugalSingleRunningTimeSpinBox;
+    if (runningTimeSpinBox) {
+        // 如果选择"是"，禁用运行时间输入框
+        if (text == "是") {
+            runningTimeSpinBox->setEnabled(false);
+            runningTimeSpinBox->setValue(0); // 清空数值
+        }
+        // 如果选择"否"，启用运行时间输入框
+        else if (text == "否") {
+            runningTimeSpinBox->setEnabled(true);
+        }
+    }
+}
