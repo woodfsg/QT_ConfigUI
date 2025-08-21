@@ -32,9 +32,8 @@ public:
         FORM_CENTRIFUGAL_SINGLE = 8,
         FORM_CENTRIFUGAL_CYCLE = 9,
         FORM_CENTRIFUGAL_STOP = 10,
-        FORM_CYCLE_STEP_SINGLE = 11,
-        FORM_CYCLE_STEP_CYCLE = 12,
-        FORM_CYCLE_STEP_STOP = 13
+        FORM_PARAM_CYCLE = 11,
+        FORM_NUM_CYCLE = 12
     };
 
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);

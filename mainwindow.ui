@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_13">
+   <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="2,3,3">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
       <item>
@@ -110,7 +110,7 @@
       <item>
        <widget class="QStackedWidget" name="paramConfig">
         <property name="currentIndex">
-         <number>8</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="empty"/>
         <widget class="QWidget" name="operatorInfoPage">
@@ -1096,6 +1096,170 @@
                </property>
               </item>
              </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="paramCyclePage">
+         <layout class="QHBoxLayout" name="horizontalLayout_14">
+          <item>
+           <layout class="QFormLayout" name="formLayout_12">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_68">
+              <property name="text">
+               <string>步骤名称</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_69">
+              <property name="text">
+               <string>样本参数</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_70">
+              <property name="text">
+               <string>开始步骤</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_71">
+              <property name="text">
+               <string>结束步骤</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_72">
+              <property name="text">
+               <string>请填写说明</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_73">
+              <property name="text">
+               <string>是否自动运行</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="paramCycleStepNameLineEdit"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="paramCycleSampleParamComboBox">
+              <item>
+               <property name="text">
+                <string>细胞参数</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="paramCycleStartStepLineEdit"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="paramCycleEndStepLineEdit"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QTextEdit" name="paramCycleDescriptionTextEdit"/>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="paramCycleAutomationComboBox">
+              <item>
+               <property name="text">
+                <string>自动运行</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>手动运行</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="numCyclePage">
+         <layout class="QHBoxLayout" name="horizontalLayout_15">
+          <item>
+           <layout class="QFormLayout" name="formLayout_14">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_74">
+              <property name="text">
+               <string>步骤名称</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_79">
+              <property name="text">
+               <string>循环次数</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_80">
+              <property name="text">
+               <string>开始步骤</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_81">
+              <property name="text">
+               <string>结束步骤</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_82">
+              <property name="text">
+               <string>请填写说明</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_83">
+              <property name="text">
+               <string>是否自动运行</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="numCycleStepNameLineEdit"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="numCycleStartStepLineEdit"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="numCycleEndStepLineEdit"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QTextEdit" name="numCycleDescriptionTextEdit"/>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="numCycleAutomationComboBox">
+              <item>
+               <property name="text">
+                <string>自动运行</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>手动运行</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="numCycleNumberSpinBox"/>
             </item>
            </layout>
           </item>

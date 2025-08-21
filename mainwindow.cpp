@@ -84,7 +84,7 @@ void MainWindow::initProgramMap()
     m_programMap["磁铁动作"] = QStringList() << "磁铁动作";
     m_programMap["液体转移"] = QStringList() << "按体积" << "按气泡感受器" << "按压力";
     m_programMap["离心运转"] = QStringList() << "单次运转" << "循环运转" << "停止运转";
-    m_programMap["循环步骤"] = QStringList() << "单次运转 " << "循环运转 " << "停止运转 ";
+    m_programMap["循环步骤"] = QStringList() << "参数循环" << "次数循环";
 }
 
 void MainWindow::initParamMap()
@@ -112,10 +112,8 @@ void MainWindow::initParamMap()
     m_paramMap.insert("停止运转", FormType::FORM_CENTRIFUGAL_STOP);
 
     // 循环步骤类别
-    m_paramMap.insert("单次运转 ", FormType::FORM_CYCLE_STEP_SINGLE);
-    m_paramMap.insert("循环运转 ", FormType::FORM_CYCLE_STEP_CYCLE);
-    m_paramMap.insert("停止运转 ", FormType::FORM_CYCLE_STEP_STOP);
-
+    m_paramMap.insert("参数循环", FormType::FORM_PARAM_CYCLE);
+    m_paramMap.insert("次数循环", FormType::FORM_NUM_CYCLE);
 }
 
 void MainWindow::initFormFieldMaps()
@@ -205,6 +203,23 @@ void MainWindow::initFormFieldMaps()
     m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["stage"] = "centrifugalStopStageComboBox";
     m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["automation"] = "centrifugalStopAutomationComboBox";
     m_formFieldMaps[FormType::FORM_CENTRIFUGAL_STOP]["stopRunning"] = "centrifugalStopRunningComboBox";
+
+    // 初始化参数循环表单的字段映射
+    m_formFieldMaps[FormType::FORM_PARAM_CYCLE]["stepName"] = "paramCycleStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_PARAM_CYCLE]["sampleParam"] = "paramCycleSampleParamComboBox";
+    m_formFieldMaps[FormType::FORM_PARAM_CYCLE]["startStep"] = "paramCycleStartStepLineEdit";
+    m_formFieldMaps[FormType::FORM_PARAM_CYCLE]["endStep"] = "paramCycleEndStepLineEdit";
+    m_formFieldMaps[FormType::FORM_PARAM_CYCLE]["description"] = "paramCycleDescriptionTextEdit";
+    m_formFieldMaps[FormType::FORM_PARAM_CYCLE]["automation"] = "paramCycleAutomationComboBox";
+
+    // 初始化次数循环表单的字段映射
+    m_formFieldMaps[FormType::FORM_NUM_CYCLE]["stepName"] = "numCycleStepNameLineEdit";
+    m_formFieldMaps[FormType::FORM_NUM_CYCLE]["cycleNum"] = "numCycleNumberSpinBox";
+    m_formFieldMaps[FormType::FORM_NUM_CYCLE]["startStep"] = "numCycleStartStepLineEdit";
+    m_formFieldMaps[FormType::FORM_NUM_CYCLE]["endStep"] = "numCycleEndStepLineEdit";
+    m_formFieldMaps[FormType::FORM_NUM_CYCLE]["description"] = "numCycleDescriptionTextEdit";   
+    m_formFieldMaps[FormType::FORM_NUM_CYCLE]["automation"] = "numCycleAutomationComboBox";
+
 }
 
 QJsonObject MainWindow::saveFormData(int formIndex)
